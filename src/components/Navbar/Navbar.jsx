@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartLine } from "@fortawesome/free-solid-svg-icons";
 import { UserAuth } from "../../assets/utils/Auth";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const { googleSignIn } = UserAuth();
+  const { googleSignIn, user } = UserAuth();
+  const navigate = useNavigate();
   const handleSignIn = async () => {
     try {
       await googleSignIn();
@@ -12,6 +14,11 @@ const Navbar = () => {
       console.log("Error signing in:", error);
     }
   };
+  useEffect(() => {
+    if (user != null) {
+      navigate("/account");
+    }
+  }, [user]);
   return (
     <div>
       <nav className='bg-white border-gray-200'>
