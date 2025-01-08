@@ -1,8 +1,17 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartLine } from "@fortawesome/free-solid-svg-icons";
+import { UserAuth } from "../../assets/utils/Auth";
 
 const Navbar = () => {
+  const { googleSignIn } = UserAuth();
+  const handleSignIn = async () => {
+    try {
+      await googleSignIn();
+    } catch (error) {
+      console.log("Error signing in:", error);
+    }
+  };
   return (
     <div>
       <nav className='bg-white border-gray-200'>
@@ -24,6 +33,7 @@ const Navbar = () => {
           {/* CTA Section: Sign In and Get Started */}
           <div className='flex md:order-2 space-x-3'>
             <button
+              onClick={handleSignIn}
               type='button'
               className='text-gray-700 font-bold hover:text-blue-700 font-medium rounded-lg text-sm px-4 py-2'
             >
