@@ -13,7 +13,9 @@ export const DashNav = () => {
 
   return (
     <>
-      <h6 className='truncate text-base'>Hi, {user?.displayName}</h6>
+      <h6 className='truncate text-base'>
+        WELCOME, {user?.displayName.toUpperCase()}
+      </h6>
       <button
         className='btn btn-error btn-soft btn-block'
         onClick={handleSignOut}
