@@ -1,24 +1,13 @@
 import React, { useState } from "react";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ApplicationRow from "./TableComponents/ApplicationRow"; // Import the new component
+import { InputModal } from "./InputModal"; // Import the InputModal component
 
 export const Applications = () => {
-  const [applications, setApplications] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false); // State to control modal visibility
 
-  const addApplication = () => {
-    const newApplication = {
-      applicationDate: "Enter Date",
-      jobTitle: "Enter Job Title",
-      companyName: "Enter Company",
-      jobLocation: "Enter Location",
-      status: "Status",
-      jobLink: "Add Link",
-      notes: "Add Notes",
-      resumeUsed: "Attach Resume",
-      coverLetterUsed: "Attach Cover Letter",
-    };
-    setApplications([...applications, newApplication]);
+  const toggleModal = () => {
+    setModalOpen(!modalOpen); // Toggle modal visibility
   };
 
   return (
@@ -29,7 +18,7 @@ export const Applications = () => {
           <h1 className='text-2xl font-bold'>Job Applications</h1>
           <button
             className='flex items-center bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg text-sm px-4 py-2 cursor-pointer'
-            onClick={addApplication}
+            onClick={toggleModal} // Open modal when clicked
           >
             <FontAwesomeIcon icon={faPlus} className='mr-2' />
             <p className='flex items-center text-sm font-medium text-white'>
@@ -71,21 +60,18 @@ export const Applications = () => {
                   <th scope='col' className='px-5 py-4'>
                     Cover Letter Used
                   </th>
+                  <th scope='col' className='px-5 py-4'>
+                    Actions
+                  </th>
                 </tr>
               </thead>
-              <tbody>
-                {applications.map((application, index) => (
-                  <ApplicationRow key={index} {...application} />
-                ))}
-              </tbody>
+              <tbody>{/* Rows will go here */}</tbody>
             </table>
           </div>
 
           {/* Pagination Section */}
           <div className='flex justify-between px-4 py-3 bg-white'>
-            <p className='text-sm text-gray-700'>
-              Showing {applications.length} of {applications.length}
-            </p>
+            <p className='text-sm text-gray-700'>Showing 0 of 0</p>
             <div className='flex items-center space-x-2'>
               <button className='px-3 py-1 text-sm text-gray-700 bg-gray-200 rounded hover:bg-gray-300'>
                 Previous
@@ -97,6 +83,9 @@ export const Applications = () => {
           </div>
         </div>
       </div>
+
+      {/* Render Modal */}
+      {modalOpen && <InputModal toggleModal={toggleModal} />}
     </section>
   );
 };
