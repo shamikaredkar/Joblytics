@@ -5,21 +5,23 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
 import { useState } from "react";
+import { setDoc, doc } from "firebase/firestore";
 
 const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState({});
-  const googleSignIn = () => {
+  const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        console.log("Signed in as:", result.user);
-      })
-      .catch((error) => {
-        console.log("Error signing in:", error);
-      });
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    //Saving user data
+    const subcollection = doc(db, "Users", user.email);
+    await setDoc(subcollection, {
+      name: user.displayName,
+      createdAt: new Date(),
+    });
   };
   const userSignOut = () => {
     signOut(auth)
