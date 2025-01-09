@@ -84,6 +84,7 @@ export const DashNav = () => {
           </div>
         </div>
       </nav>
+      <hr />
     </>
   );
 };
