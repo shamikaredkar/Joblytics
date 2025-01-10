@@ -12,6 +12,8 @@ import { UserAuth } from "../../assets/utils/Auth";
 import { deleteJobFromUser } from "../../assets/utils/firestoreService";
 
 export const Applications = () => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  let today = new Date().toISOString().slice(0, 10);
   const [modalOpen, setModalOpen] = useState(false); // State to control modal visibility
   const [applications, setApplications] = useState([]);
 
@@ -79,8 +81,11 @@ export const Applications = () => {
         <div className='relative overflow-hidden bg-white shadow-md sm:rounded-lg mt-4'>
           <div className='overflow-x-auto'>
             <table className='w-full text-sm text-left text-gray-500 table-fixed'>
-              <thead className='text-xs text-gray-700 uppercase bg-gray-300'>
+              <thead className='text-xs text-gray-700 uppercase bg-gray-200'>
                 <tr>
+                  <th scope='col' className='px-5 py-4'>
+                    Date
+                  </th>
                   <th scope='col' className='px-5 py-4'>
                     Job Title
                   </th>
@@ -113,7 +118,11 @@ export const Applications = () => {
               <tbody>
                 {applications.map((app) => (
                   <tr key={app.id} className='border-b hover:bg-gray-100'>
-                    <td className='px-5 py-4 truncate max-w-xs'>{app.title}</td>
+                    <td className='px-5 py-4 truncate max-w-xs'>{today}</td>
+                    <td className='px-5 py-4 break-words whitespace-normal max-w-xs'>
+                      {app.title}
+                    </td>
+
                     <td className='px-5 py-4 truncate max-w-xs'>
                       {app.company}
                     </td>
@@ -144,8 +153,23 @@ export const Applications = () => {
                       </a>
                     </td>
                     <td className='px-5 py-4 break-words max-w-xs'>
-                      {app.notes || "N/A"}
+                      {app.notes && app.notes.length > 50 ? (
+                        <>
+                          {isExpanded
+                            ? app.notes
+                            : `${app.notes.slice(0, 50)}...`}
+                          <button
+                            onClick={() => setIsExpanded(!isExpanded)}
+                            className='text-blue-600 hover:underline ml-2 text-sm'
+                          >
+                            {isExpanded ? "Less" : "More"}
+                          </button>
+                        </>
+                      ) : (
+                        app.notes || "N/A"
+                      )}
                     </td>
+
                     <td className='px-5 py-4 truncate max-w-xs'>
                       {app.resumeUrl ? (
                         <a
