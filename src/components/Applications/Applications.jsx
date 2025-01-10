@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   faPenToSquare,
   faPlus,
@@ -6,14 +6,41 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { InputModal } from "./InputModal"; // Import the InputModal component
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../assets/utils/firebase";
+import { UserAuth } from "../../assets/utils/Auth";
 
 export const Applications = () => {
   const [modalOpen, setModalOpen] = useState(false); // State to control modal visibility
   const [applications, setApplications] = useState([]);
 
+  const { user } = UserAuth(); // Get logged-in user details
+
+  // Fetch job applications from Firestore
+  useEffect(() => {
+    const fetchApplications = async () => {
+      if (!user || !user.email) return; // Ensure user is logged in
+
+      try {
+        const jobsRef = collection(db, "Users", user.email, "Jobs"); // Firestore reference
+        const querySnapshot = await getDocs(jobsRef);
+        const jobs = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setApplications(jobs); // Update state
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+      }
+    };
+
+    fetchApplications();
+  }, [user]);
+
   const toggleModal = () => {
     setModalOpen(!modalOpen); // Toggle modal visibility
   };
+
   const addApplication = (newApplication) => {
     setApplications((prev) => [...prev, newApplication]); // Add new application to the state
     toggleModal(); // Close modal after adding
@@ -90,7 +117,7 @@ export const Applications = () => {
                             ? "bg-yellow-100 text-yellow-600"
                             : app.status === "Applied"
                             ? "bg-green-100 text-green-600"
-                            : "bg-gray-100 text-gray-600" // Default for unknown statuses
+                            : "bg-gray-100 text-gray-600"
                         }`}
                       >
                         {app.status}
@@ -108,10 +135,32 @@ export const Applications = () => {
                       {app.notes || "N/A"}
                     </td>
                     <td className='px-5 py-4 truncate max-w-xs'>
-                      {app.resume ? app.resume.name : "N/A"}
+                      {app.resumeUrl ? (
+                        <a
+                          href={app.resumeUrl}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          className='text-blue-600 hover:underline'
+                        >
+                          View Resume
+                        </a>
+                      ) : (
+                        "N/A"
+                      )}
                     </td>
                     <td className='px-5 py-4 truncate max-w-xs'>
-                      {app.coverLetter ? app.coverLetter.name : "N/A"}
+                      {app.coverLetterUrl ? (
+                        <a
+                          href={app.coverLetterUrl}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          className='text-blue-600 hover:underline'
+                        >
+                          View Cover Letter
+                        </a>
+                      ) : (
+                        "N/A"
+                      )}
                     </td>
                     <td className='flex justify-between px-5 py-4 truncate max-w-xs ml-2 mr-12'>
                       <button>
@@ -121,7 +170,6 @@ export const Applications = () => {
                         />
                       </button>
                       <button>
-                        {" "}
                         <FontAwesomeIcon
                           icon={faTrash}
                           className='text-blue-600'

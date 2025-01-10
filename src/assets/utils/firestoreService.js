@@ -13,3 +13,19 @@ export const addJobToUser = async (userEmail, jobData) => {
     throw error;
   }
 };
+
+// Fetch all jobs for a logged-in user
+export const fetchJobsForUser = async (userEmail) => {
+  try {
+    const jobsCollectionRef = collection(db, "Users", userEmail, "Jobs");
+    const querySnapshot = await getDocs(jobsCollectionRef);
+    const jobs = querySnapshot.docs.map((doc) => ({
+      id: doc.id, // Include document ID
+      ...doc.data(), // Spread job data
+    }));
+    return jobs;
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    throw error;
+  }
+};
