@@ -1,14 +1,40 @@
 import React from "react";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState } from "react";
+export const InputModal = ({ toggleModal, onSave }) => {
+  const [formData, setFormData] = useState({
+    title: "",
+    company: "",
+    location: "",
+    status: "",
+    link: "",
+    notes: "",
+    resume: null,
+    coverLetter: null,
+  });
 
-export const InputModal = ({ toggleModal }) => {
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: files[0] }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(formData); // Pass the form data to the parent component
+    toggleModal(); // Close the modal
+  };
   return (
     <div
       className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'
       aria-hidden='true'
     >
-      <div className='relative w-full max-w-md p-4'>
+      <div className='relative w-full max-w-2xl p-4'>
         {/* Modal Content */}
         <div className='bg-white rounded-lg shadow'>
           {/* Modal Header */}
@@ -40,167 +66,164 @@ export const InputModal = ({ toggleModal }) => {
           </div>
 
           {/* Modal Body */}
-          <form className='p-4'>
+          <form className='p-4' onSubmit={handleSubmit}>
             <div className='grid gap-4 mb-4 grid-cols-2'>
-              {/* Name Input */}
+              {/* Title Input */}
               <div className='col-span-2 sm:col-span-1'>
                 <label
-                  htmlFor='price'
+                  htmlFor='title'
                   className='block mb-2 text-sm font-medium text-gray-900'
                 >
                   Title
                 </label>
                 <input
                   type='text'
-                  id='price'
+                  name='title'
+                  id='title'
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
                   placeholder='Software Developer'
+                  value={formData.title}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
 
-              {/* Category Input */}
+              {/* Company Input */}
               <div className='col-span-2 sm:col-span-1'>
                 <label
-                  htmlFor='price'
+                  htmlFor='company'
                   className='block mb-2 text-sm font-medium text-gray-900'
                 >
                   Company
                 </label>
                 <input
                   type='text'
-                  id='price'
+                  name='company'
+                  id='company'
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
                   placeholder='Google'
+                  value={formData.company}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
 
-              {/* Price Input */}
+              {/* Location Input */}
               <div className='col-span-2 sm:col-span-1'>
                 <label
-                  htmlFor='price'
+                  htmlFor='location'
                   className='block mb-2 text-sm font-medium text-gray-900'
                 >
                   Location
                 </label>
                 <input
                   type='text'
-                  id='price'
+                  name='location'
+                  id='location'
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
                   placeholder='California, LA'
+                  value={formData.location}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
 
-              {/* Category Input */}
+              {/* Status Select */}
               <div className='col-span-2 sm:col-span-1'>
                 <label
-                  htmlFor='category'
+                  htmlFor='status'
                   className='block mb-2 text-sm font-medium text-gray-900'
                 >
                   Status
                 </label>
                 <select
-                  id='category'
+                  name='status'
+                  id='status'
                   className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
-                  defaultValue=''
+                  value={formData.status}
+                  onChange={handleInputChange}
+                  required
                 >
                   <option value='' disabled>
                     Select
                   </option>
-                  <option value='TV'>Applied</option>
-                  <option value='PC'>Interview</option>
-                  <option value='GA'>Rejected</option>
+                  <option value='Applied'>Applied</option>
+                  <option value='Interview'>Interview</option>
+                  <option value='Rejected'>Rejected</option>
                 </select>
               </div>
 
-              {/* Description Input */}
+              {/* Link Input */}
               <div className='col-span-2'>
                 <label
-                  htmlFor='description'
+                  htmlFor='link'
                   className='block mb-2 text-sm font-medium text-gray-900'
                 >
                   Link
                 </label>
                 <input
-                  id='description'
-                  rows='4'
-                  className='block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                  type='text'
+                  name='link'
+                  id='link'
+                  className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
                   placeholder='Paste link to the job'
-                ></input>
+                  value={formData.link}
+                  onChange={handleInputChange}
+                />
               </div>
-              {/* Description Input */}
+
+              {/* Notes Input */}
               <div className='col-span-2'>
                 <label
-                  htmlFor='description'
+                  htmlFor='notes'
                   className='block mb-2 text-sm font-medium text-gray-900'
                 >
                   Notes
                 </label>
                 <textarea
-                  id='description'
+                  name='notes'
+                  id='notes'
                   rows='4'
                   className='block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500'
                   placeholder='Add Notes'
+                  value={formData.notes}
+                  onChange={handleInputChange}
                 ></textarea>
               </div>
-            </div>
 
-            {/* Resume Upload */}
-            <div className='col-span-2 mb-4'>
-              <label
-                htmlFor='resume'
-                className='block mb-2 text-sm font-medium text-gray-900'
-              >
-                Resume
-              </label>
-              <div className='flex items-center justify-center w-full'>
+              {/* Resume Upload */}
+              <div className='col-span-2'>
                 <label
                   htmlFor='resume'
-                  className='flex flex-col items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 border-gray-300 hover:bg-gray-100'
+                  className='block mb-2 text-sm font-medium text-gray-900'
                 >
-                  <div className='flex flex-col items-center justify-center pt-5 pb-6'>
-                    <FontAwesomeIcon
-                      icon={faUpload}
-                      className='mr-2 text-gray-500'
-                    />
-
-                    <p className='mb-2 text-sm text-gray-500 pl-2 pr-2'>
-                      <span className='font-semibold'>Click to upload</span> or
-                      drag and drop
-                    </p>
-                  </div>
-                  <input id='resume' type='file' className='hidden' />
+                  Resume
                 </label>
+                <input
+                  type='file'
+                  name='resume'
+                  id='resume'
+                  className='block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none'
+                  onChange={handleFileChange}
+                />
               </div>
-            </div>
-            {/* CoverLetter Upload */}
-            <div className='col-span-2 mb-4'>
-              <label
-                htmlFor='resume'
-                className='block mb-2 text-sm font-medium text-gray-900'
-              >
-                Cover Letter
-              </label>
-              <div className='flex items-center justify-center w-full'>
-                <label
-                  htmlFor='resume'
-                  className='flex flex-col items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 border-gray-300 hover:bg-gray-100'
-                >
-                  <div className='flex flex-col items-center justify-center pt-5 pb-6'>
-                    <FontAwesomeIcon
-                      icon={faUpload}
-                      className='mr-2 text-gray-500'
-                    />
 
-                    <p className='mb-2 text-sm text-gray-500 pl-2 pr-2'>
-                      <span className='font-semibold'>Click to upload</span> or
-                      drag and drop
-                    </p>
-                  </div>
-                  <input id='resume' type='file' className='hidden' />
+              {/* Cover Letter Upload */}
+              <div className='col-span-2'>
+                <label
+                  htmlFor='coverLetter'
+                  className='block mb-2 text-sm font-medium text-gray-900'
+                >
+                  Cover Letter
                 </label>
+                <div className='flex items-center justify-center w-full'></div>
+                <input
+                  type='file'
+                  name='coverLetter'
+                  id='coverLetter'
+                  className='block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none'
+                  onChange={handleFileChange}
+                />
               </div>
             </div>
 

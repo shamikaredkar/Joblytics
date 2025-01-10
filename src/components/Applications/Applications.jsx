@@ -5,9 +5,14 @@ import { InputModal } from "./InputModal"; // Import the InputModal component
 
 export const Applications = () => {
   const [modalOpen, setModalOpen] = useState(false); // State to control modal visibility
+  const [applications, setApplications] = useState([]);
 
   const toggleModal = () => {
     setModalOpen(!modalOpen); // Toggle modal visibility
+  };
+  const addApplication = (newApplication) => {
+    setApplications((prev) => [...prev, newApplication]); // Add new application to the state
+    toggleModal(); // Close modal after adding
   };
 
   return (
@@ -34,44 +39,86 @@ export const Applications = () => {
               <thead className='text-xs text-gray-700 uppercase bg-gray-300'>
                 <tr>
                   <th scope='col' className='px-5 py-4'>
-                    Application Date
-                  </th>
-                  <th scope='col' className='px-5 py-4'>
                     Job Title
                   </th>
                   <th scope='col' className='px-5 py-4'>
                     Company Name
                   </th>
                   <th scope='col' className='px-5 py-4'>
-                    Job Location
+                    Location
                   </th>
                   <th scope='col' className='px-5 py-4'>
                     Status
                   </th>
                   <th scope='col' className='px-5 py-4'>
-                    Job Link
+                    Link
                   </th>
                   <th scope='col' className='px-5 py-4'>
                     Notes
                   </th>
                   <th scope='col' className='px-5 py-4'>
-                    Resume Used
+                    Resume
                   </th>
                   <th scope='col' className='px-5 py-4'>
-                    Cover Letter Used
-                  </th>
-                  <th scope='col' className='px-5 py-4'>
-                    Actions
+                    Cover Letter
                   </th>
                 </tr>
               </thead>
-              <tbody>{/* Rows will go here */}</tbody>
+              <tbody>
+                {applications.map((app, index) => (
+                  <tr key={index} className='border-b hover:bg-gray-100'>
+                    <td className='px-5 py-4 truncate max-w-xs'>{app.title}</td>
+                    <td className='px-5 py-4 truncate max-w-xs'>
+                      {app.company}
+                    </td>
+                    <td className='px-5 py-4 truncate max-w-xs'>
+                      {app.location}
+                    </td>
+                    <td className='px-5 py-4'>
+                      <span
+                        className={`py-1 px-5 rounded-full text-xs font-medium ${
+                          app.status === "Rejected"
+                            ? "bg-red-100 text-red-600"
+                            : app.status === "Interview"
+                            ? "bg-yellow-100 text-yellow-600"
+                            : app.status === "Applied"
+                            ? "bg-green-100 text-green-600"
+                            : "bg-gray-100 text-gray-600" // Default for unknown statuses
+                        }`}
+                      >
+                        {app.status}
+                      </span>
+                    </td>
+                    <td className='px-5 py-4 break-all'>
+                      <a
+                        href={app.link}
+                        className='text-blue-600 hover:underline'
+                      >
+                        {app.link || "N/A"}
+                      </a>
+                    </td>
+                    <td className='px-5 py-4 break-words max-w-xs'>
+                      {app.notes}
+                    </td>
+                    <td className='px-5 py-4 truncate max-w-xs'>
+                      {app.resume ? app.resume.name : "No file uploaded"}
+                    </td>
+                    <td className='px-5 py-4 truncate max-w-xs'>
+                      {app.coverLetter
+                        ? app.coverLetter.name
+                        : "No file uploaded"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </div>
 
           {/* Pagination Section */}
           <div className='flex justify-between px-4 py-3 bg-white'>
-            <p className='text-sm text-gray-700'>Showing 0 of 0</p>
+            <p className='text-sm text-gray-700'>
+              Showing {applications.length} of {applications.length}
+            </p>
             <div className='flex items-center space-x-2'>
               <button className='px-3 py-1 text-sm text-gray-700 bg-gray-200 rounded hover:bg-gray-300'>
                 Previous
@@ -85,7 +132,9 @@ export const Applications = () => {
       </div>
 
       {/* Render Modal */}
-      {modalOpen && <InputModal toggleModal={toggleModal} />}
+      {modalOpen && (
+        <InputModal toggleModal={toggleModal} onSave={addApplication} />
+      )}
     </section>
   );
 };
