@@ -180,15 +180,17 @@ export const Applications = () => {
                 ) : (
                   applications.map((app) => (
                     <tr key={app.id} className='border-b hover:bg-gray-100'>
-                      <td className='px-5 py-4 truncate max-w-xs'>{today}</td>
+                      <td className='px-5 py-4 break-words whitespace-normal  truncate max-w-xs'>
+                        {today}
+                      </td>
                       <td className='px-5 py-4 break-words whitespace-normal max-w-xs'>
                         {app.title}
                       </td>
 
-                      <td className='px-5 py-4 truncate max-w-xs'>
+                      <td className='px-5 py-4 break-words whitespace-normal  truncate max-w-xs'>
                         {app.company}
                       </td>
-                      <td className='px-5 py-4 truncate max-w-xs'>
+                      <td className='px-5 py-4 break-words whitespace-normal  truncate max-w-xs'>
                         {app.location}
                       </td>
                       <td className='px-5 py-4'>
@@ -260,21 +262,26 @@ export const Applications = () => {
                           "No File"
                         )}
                       </td>
-                      <td className='flex items-center justify-between px-5 py-4 truncate max-w-xs ml-2 mr-12 mt-6 space-x-4'>
-                        <button className='flex items-center justify-center rounded hover:bg-blue-100'>
+                      <td className='flex items-center justify-start px-5 py-4 space-x-4'>
+                        {/* Edit Button */}
+                        <button
+                          className='flex items-center justify-center rounded p-2 hover:bg-blue-100'
+                          onClick={() => {
+                            setEditApplication(app); // Pass the application being edited
+                            setEditModalOpen(true);
+                          }}
+                        >
                           <FontAwesomeIcon
                             icon={faPenToSquare}
                             className='text-blue-600'
-                            onClick={() => {
-                              setEditApplication(app); // Pass the application being edited
-                              setEditModalOpen(true);
-                            }}
                           />
                           <span className='sr-only'>Edit</span>
                         </button>
+
+                        {/* Delete Button */}
                         <button
                           onClick={() => deleteApplication(app.id)}
-                          className='flex items-center justify-center'
+                          className='flex items-center justify-center rounded p-2 hover:bg-blue-100'
                         >
                           <FontAwesomeIcon
                             icon={faTrash}

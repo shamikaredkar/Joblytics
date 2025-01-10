@@ -50,19 +50,27 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
 
     const updatedData = { ...formData };
     try {
+      const storage = getStorage();
+
+      // Handle resume upload
       if (formData.resume) {
-        const resumePath = `Users/${user.email}/Jobs/${application.id}/Resume.pdf`;
-        const storageRef = ref(getStorage(), resumePath);
-        await uploadBytes(storageRef, formData.resume);
-        updatedData.existingResume = await getDownloadURL(storageRef);
+        const resumePath = `Users/${user.email}/Jobs/${application.id}/Resume/Resume.pdf`;
+        const resumeRef = ref(storage, resumePath);
+        await uploadBytes(resumeRef, formData.resume);
+        updatedData.resumeUrl = await getDownloadURL(resumeRef); // Update resumeUrl
       }
 
+      // Handle cover letter upload
       if (formData.coverLetter) {
-        const coverLetterPath = `Users/${user.email}/Jobs/${application.id}/CoverLetter.pdf`;
-        const storageRef = ref(getStorage(), coverLetterPath);
-        await uploadBytes(storageRef, formData.coverLetter);
-        updatedData.existingCoverLetter = await getDownloadURL(storageRef);
+        const coverLetterPath = `Users/${user.email}/Jobs/${application.id}/CoverLetter/CoverLetter.pdf`;
+        const coverLetterRef = ref(storage, coverLetterPath);
+        await uploadBytes(coverLetterRef, formData.coverLetter);
+        updatedData.coverLetterUrl = await getDownloadURL(coverLetterRef); // Update coverLetterUrl
       }
+
+      // Remove file objects before Firestore update
+      delete updatedData.resume;
+      delete updatedData.coverLetter;
 
       // Pass updated data and application ID to parent
       onSave(updatedData, application.id);
