@@ -9,6 +9,7 @@ import { InputModal } from "./InputModal"; // Import the InputModal component
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../assets/utils/firebase";
 import { UserAuth } from "../../assets/utils/Auth";
+import { deleteJobFromUser } from "../../assets/utils/firestoreService";
 
 export const Applications = () => {
   const [modalOpen, setModalOpen] = useState(false); // State to control modal visibility
@@ -44,6 +45,17 @@ export const Applications = () => {
   const addApplication = (newApplication) => {
     setApplications((prev) => [...prev, newApplication]); // Add new application to the state
     toggleModal(); // Close modal after adding
+  };
+
+  const deleteApplication = async (jobId) => {
+    if (!user || !user.email || !jobId) return;
+
+    try {
+      await deleteJobFromUser(user.email, jobId); // Delete from Firestore
+      setApplications((prev) => prev.filter((app) => app.id !== jobId)); // Update state
+    } catch (error) {
+      console.error("Error deleting job:", error);
+    }
   };
 
   return (
@@ -99,8 +111,8 @@ export const Applications = () => {
                 </tr>
               </thead>
               <tbody>
-                {applications.map((app, index) => (
-                  <tr key={index} className='border-b hover:bg-gray-100'>
+                {applications.map((app) => (
+                  <tr key={app.id} className='border-b hover:bg-gray-100'>
                     <td className='px-5 py-4 truncate max-w-xs'>{app.title}</td>
                     <td className='px-5 py-4 truncate max-w-xs'>
                       {app.company}
@@ -169,7 +181,7 @@ export const Applications = () => {
                           className='text-blue-600'
                         />
                       </button>
-                      <button>
+                      <button onClick={() => deleteApplication(app.id)}>
                         <FontAwesomeIcon
                           icon={faTrash}
                           className='text-blue-600'

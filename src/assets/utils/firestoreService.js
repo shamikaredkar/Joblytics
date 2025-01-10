@@ -1,4 +1,5 @@
 import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { doc, deleteDoc } from "firebase/firestore";
 
 const db = getFirestore();
 
@@ -28,4 +29,11 @@ export const fetchJobsForUser = async (userEmail) => {
     console.error("Error fetching jobs:", error);
     throw error;
   }
+};
+
+export const deleteJobFromUser = async (userEmail, jobId) => {
+  if (!userEmail || !jobId) throw new Error("Invalid parameters for delete");
+
+  const jobDocRef = doc(db, "Users", userEmail, "Jobs", jobId);
+  await deleteDoc(jobDocRef);
 };
