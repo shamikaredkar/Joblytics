@@ -50,7 +50,7 @@ export const InputModal = ({ toggleModal, onSave }) => {
 
       const userEmail = user.email;
 
-      // Prepare job data
+      // Step 1: Create the Firestore document and get the jobId
       const jobData = {
         title: formData.title,
         company: formData.company,
@@ -60,27 +60,33 @@ export const InputModal = ({ toggleModal, onSave }) => {
         notes: formData.notes,
       };
 
-      // Upload files if they exist
+      const jobId = await addJobToUser(userEmail, jobData);
+
+      // Step 2: Upload files to Firebase Storage
+      const updatedJobData = { ...jobData }; // Copy initial job data
+
       if (formData.resume) {
-        const resumePath = `Users/${userEmail}/Jobs/${formData.title}_resume.pdf`;
-        jobData.resumeUrl = await uploadFile(formData.resume, resumePath);
+        const resumePath = `Users/${userEmail}/Jobs/${jobId}/Resume/Resume.pdf`;
+        const resumeUrl = await uploadFile(formData.resume, resumePath);
+        updatedJobData.resumeUrl = resumeUrl; // Add resume URL to job data
       }
 
       if (formData.coverLetter) {
-        const coverLetterPath = `Users/${userEmail}/Jobs/${formData.title}_coverLetter.pdf`;
-        jobData.coverLetterUrl = await uploadFile(
+        const coverLetterPath = `Users/${userEmail}/Jobs/${jobId}/CoverLetter/CoverLetter.pdf`;
+        const coverLetterUrl = await uploadFile(
           formData.coverLetter,
           coverLetterPath
         );
+        updatedJobData.coverLetterUrl = coverLetterUrl; // Add cover letter URL to job data
       }
 
-      // Save job data to Firestore
-      const jobId = await addJobToUser(userEmail, jobData);
+      // Step 3: Update the Firestore document with file URLs
+      await addJobToUser(userEmail, updatedJobData, jobId); // Update the same document
 
-      console.log("Job added with ID:", jobId);
+      console.log("Job added with files successfully:", jobId);
 
       // Call parent onSave to update the UI
-      onSave({ id: jobId, ...jobData });
+      onSave({ id: jobId, ...updatedJobData });
       toggleModal();
     } catch (error) {
       console.error("Error saving job:", error);
@@ -88,6 +94,7 @@ export const InputModal = ({ toggleModal, onSave }) => {
       setIsSaving(false);
     }
   };
+
   return (
     <div
       className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'

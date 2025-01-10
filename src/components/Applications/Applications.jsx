@@ -154,7 +154,7 @@ export const Applications = () => {
                           rel='noopener noreferrer'
                           className='text-blue-600 hover:underline'
                         >
-                          View Resume
+                          View
                         </a>
                       ) : (
                         "N/A"
@@ -168,24 +168,29 @@ export const Applications = () => {
                           rel='noopener noreferrer'
                           className='text-blue-600 hover:underline'
                         >
-                          View Cover Letter
+                          View
                         </a>
                       ) : (
                         "N/A"
                       )}
                     </td>
-                    <td className='flex justify-between px-5 py-4 truncate max-w-xs ml-2 mr-12'>
-                      <button>
+                    <td className='flex items-center justify-between px-5 py-4 truncate max-w-xs ml-2 mr-12 mt-6 space-x-4'>
+                      <button className='flex items-center justify-center rounded hover:bg-blue-100'>
                         <FontAwesomeIcon
                           icon={faPenToSquare}
                           className='text-blue-600'
                         />
+                        <span className='sr-only'>Edit</span>
                       </button>
-                      <button onClick={() => deleteApplication(app.id)}>
+                      <button
+                        onClick={() => deleteApplication(app.id)}
+                        className='flex items-center justify-center'
+                      >
                         <FontAwesomeIcon
                           icon={faTrash}
                           className='text-blue-600'
                         />
+                        <span className='sr-only'>Delete</span>
                       </button>
                     </td>
                   </tr>
