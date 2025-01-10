@@ -23,6 +23,24 @@ export const Applications = () => {
   const [selectedApplication, setSelectedApplication] = useState(null); // Track the application being edited
   const [editApplication, setEditApplication] = useState(null);
   const { user } = UserAuth(); // Get logged-in user details
+  const [currentPage, setCurrentPage] = useState(1);
+  const entriesPerPage = 5; // Number of entries per page
+  const totalPages = Math.ceil(applications.length / entriesPerPage);
+  const paginatedApplications = applications.slice(
+    (currentPage - 1) * entriesPerPage,
+    currentPage * entriesPerPage
+  );
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
 
   // Fetch job applications from Firestore
   useEffect(() => {
@@ -171,14 +189,14 @@ export const Applications = () => {
                 </tr>
               </thead>
               <tbody>
-                {applications.length === 0 ? (
+                {paginatedApplications.length === 0 ? (
                   <tr>
                     <td colSpan='10' className='text-center py-4 border-b'>
                       No applications found. Add a new application!
                     </td>
                   </tr>
                 ) : (
-                  applications.map((app) => (
+                  paginatedApplications.map((app) => (
                     <tr key={app.id} className='border-b hover:bg-gray-100'>
                       <td className='px-5 py-4 break-words whitespace-normal  truncate max-w-xs'>
                         {today}
@@ -300,13 +318,31 @@ export const Applications = () => {
           {/* Pagination Section */}
           <div className='flex justify-between px-4 py-3 bg-white'>
             <p className='text-sm text-gray-700'>
-              Showing {applications.length} of {applications.length}
+              Showing {(currentPage - 1) * entriesPerPage + 1}-
+              {Math.min(currentPage * entriesPerPage, applications.length)} of{" "}
+              {applications.length}
             </p>
             <div className='flex items-center space-x-2'>
-              <button className='px-3 py-1 text-sm text-gray-700 bg-gray-200 rounded hover:bg-gray-300'>
+              <button
+                onClick={handlePrevious}
+                disabled={currentPage === 1}
+                className={`px-3 py-1 text-sm rounded ${
+                  currentPage === 1
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                }`}
+              >
                 Previous
               </button>
-              <button className='px-3 py-1 text-sm text-gray-700 bg-gray-200 rounded hover:bg-gray-300'>
+              <button
+                onClick={handleNext}
+                disabled={currentPage === totalPages}
+                className={`px-3 py-1 text-sm rounded ${
+                  currentPage === totalPages
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                }`}
+              >
                 Next
               </button>
             </div>
