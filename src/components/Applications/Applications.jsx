@@ -10,28 +10,33 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../assets/utils/firebase";
 import { UserAuth } from "../../assets/utils/Auth";
 import { deleteJobFromUser } from "../../assets/utils/firestoreService";
+import { EditModal } from "./EditModal";
+import { doc, updateDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export const Applications = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
   let today = new Date().toISOString().slice(0, 10);
-  const [modalOpen, setModalOpen] = useState(false); // State to control modal visibility
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false); // Add Modal
+  const [editModalOpen, setEditModalOpen] = useState(false); // Edit Modal
   const [applications, setApplications] = useState([]);
-
+  const [selectedApplication, setSelectedApplication] = useState(null); // Track the application being edited
+  const [editApplication, setEditApplication] = useState(null);
   const { user } = UserAuth(); // Get logged-in user details
 
   // Fetch job applications from Firestore
   useEffect(() => {
     const fetchApplications = async () => {
-      if (!user || !user.email) return; // Ensure user is logged in
+      if (!user || !user.email) return;
 
       try {
-        const jobsRef = collection(db, "Users", user.email, "Jobs"); // Firestore reference
+        const jobsRef = collection(db, "Users", user.email, "Jobs");
         const querySnapshot = await getDocs(jobsRef);
         const jobs = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-        setApplications(jobs); // Update state
+        setApplications(jobs);
       } catch (error) {
         console.error("Error fetching jobs:", error);
       }
@@ -41,20 +46,70 @@ export const Applications = () => {
   }, [user]);
 
   const toggleModal = () => {
-    setModalOpen(!modalOpen); // Toggle modal visibility
+    setModalOpen(!modalOpen);
+  };
+  const toggleExpand = (id) => {
+    setApplications((prev) =>
+      prev.map((app) =>
+        app.id === id ? { ...app, isExpanded: !app.isExpanded } : app
+      )
+    );
+  };
+
+  const toggleEditModal = (application = null) => {
+    setSelectedApplication(application); // Set the application being edited
+    setEditModalOpen(!editModalOpen);
   };
 
   const addApplication = (newApplication) => {
-    setApplications((prev) => [...prev, newApplication]); // Add new application to the state
-    toggleModal(); // Close modal after adding
+    setApplications((prev) => [...prev, newApplication]);
+    toggleModal();
+  };
+
+  const updateApplication = async (updatedData, jobId) => {
+    if (!user || !user.email || !jobId) return;
+
+    try {
+      const storage = getStorage();
+
+      // Check if files are included in updatedData
+      if (updatedData.resume) {
+        const resumePath = `Users/${user.email}/Jobs/${jobId}/Resume/Resume.pdf`;
+        const resumeRef = ref(storage, resumePath);
+        await uploadBytes(resumeRef, updatedData.resume); // Upload the file
+        updatedData.existingResume = await getDownloadURL(resumeRef); // Get the URL
+      }
+
+      if (updatedData.coverLetter) {
+        const coverLetterPath = `Users/${user.email}/Jobs/${jobId}/CoverLetter/CoverLetter.pdf`;
+        const coverLetterRef = ref(storage, coverLetterPath);
+        await uploadBytes(coverLetterRef, updatedData.coverLetter); // Upload the file
+        updatedData.existingCoverLetter = await getDownloadURL(coverLetterRef); // Get the URL
+      }
+
+      // Remove file objects before Firestore update
+      delete updatedData.resume;
+      delete updatedData.coverLetter;
+
+      // Update Firestore document
+      const jobsRef = doc(db, "Users", user.email, "Jobs", jobId);
+      await updateDoc(jobsRef, updatedData);
+
+      // Update local state
+      setApplications((prev) =>
+        prev.map((app) => (app.id === jobId ? { ...app, ...updatedData } : app))
+      );
+    } catch (error) {
+      console.error("Error updating application:", error);
+    }
   };
 
   const deleteApplication = async (jobId) => {
     if (!user || !user.email || !jobId) return;
 
     try {
-      await deleteJobFromUser(user.email, jobId); // Delete from Firestore
-      setApplications((prev) => prev.filter((app) => app.id !== jobId)); // Update state
+      await deleteJobFromUser(user.email, jobId);
+      setApplications((prev) => prev.filter((app) => app.id !== jobId));
     } catch (error) {
       console.error("Error deleting job:", error);
     }
@@ -116,109 +171,121 @@ export const Applications = () => {
                 </tr>
               </thead>
               <tbody>
-                {applications.map((app) => (
-                  <tr key={app.id} className='border-b hover:bg-gray-100'>
-                    <td className='px-5 py-4 truncate max-w-xs'>{today}</td>
-                    <td className='px-5 py-4 break-words whitespace-normal max-w-xs'>
-                      {app.title}
-                    </td>
-
-                    <td className='px-5 py-4 truncate max-w-xs'>
-                      {app.company}
-                    </td>
-                    <td className='px-5 py-4 truncate max-w-xs'>
-                      {app.location}
-                    </td>
-                    <td className='px-5 py-4'>
-                      <span
-                        className={`py-1 px-5 rounded-full text-xs font-medium ${
-                          app.status === "Rejected"
-                            ? "bg-red-100 text-red-600"
-                            : app.status === "Interview"
-                            ? "bg-yellow-100 text-yellow-600"
-                            : app.status === "Applied"
-                            ? "bg-green-100 text-green-600"
-                            : "bg-gray-100 text-gray-600"
-                        }`}
-                      >
-                        {app.status}
-                      </span>
-                    </td>
-                    <td className='px-5 py-4 break-all'>
-                      <a
-                        href={app.link}
-                        className='text-blue-600 hover:underline'
-                      >
-                        {app.link || "N/A"}
-                      </a>
-                    </td>
-                    <td className='px-5 py-4 break-words max-w-xs'>
-                      {app.notes && app.notes.length > 50 ? (
-                        <>
-                          {isExpanded
-                            ? app.notes
-                            : `${app.notes.slice(0, 50)}...`}
-                          <button
-                            onClick={() => setIsExpanded(!isExpanded)}
-                            className='text-blue-600 hover:underline ml-2 text-sm'
-                          >
-                            {isExpanded ? "Less" : "More"}
-                          </button>
-                        </>
-                      ) : (
-                        app.notes || "N/A"
-                      )}
-                    </td>
-
-                    <td className='px-5 py-4 truncate max-w-xs'>
-                      {app.resumeUrl ? (
-                        <a
-                          href={app.resumeUrl}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='text-blue-600 hover:underline'
-                        >
-                          View
-                        </a>
-                      ) : (
-                        "N/A"
-                      )}
-                    </td>
-                    <td className='px-5 py-4 truncate max-w-xs'>
-                      {app.coverLetterUrl ? (
-                        <a
-                          href={app.coverLetterUrl}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='text-blue-600 hover:underline'
-                        >
-                          View
-                        </a>
-                      ) : (
-                        "N/A"
-                      )}
-                    </td>
-                    <td className='flex items-center justify-between px-5 py-4 truncate max-w-xs ml-2 mr-12 mt-6 space-x-4'>
-                      <button className='flex items-center justify-center rounded hover:bg-blue-100'>
-                        <FontAwesomeIcon
-                          icon={faPenToSquare}
-                          className='text-blue-600'
-                        />
-                        <span className='sr-only'>Edit</span>
-                      </button>
-                      <button
-                        onClick={() => deleteApplication(app.id)}
-                        className='flex items-center justify-center'
-                      >
-                        <FontAwesomeIcon
-                          icon={faTrash}
-                          className='text-blue-600'
-                        />
-                        <span className='sr-only'>Delete</span>
-                      </button>
+                {applications.length === 0 ? (
+                  <tr>
+                    <td colSpan='10' className='text-center py-4 border-b'>
+                      No applications found. Add a new application!
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  applications.map((app) => (
+                    <tr key={app.id} className='border-b hover:bg-gray-100'>
+                      <td className='px-5 py-4 truncate max-w-xs'>{today}</td>
+                      <td className='px-5 py-4 break-words whitespace-normal max-w-xs'>
+                        {app.title}
+                      </td>
+
+                      <td className='px-5 py-4 truncate max-w-xs'>
+                        {app.company}
+                      </td>
+                      <td className='px-5 py-4 truncate max-w-xs'>
+                        {app.location}
+                      </td>
+                      <td className='px-5 py-4'>
+                        <span
+                          className={`py-1 px-5 rounded-full text-xs font-medium ${
+                            app.status === "Rejected"
+                              ? "bg-red-100 text-red-600"
+                              : app.status === "Interview"
+                              ? "bg-yellow-100 text-yellow-600"
+                              : app.status === "Applied"
+                              ? "bg-green-100 text-green-600"
+                              : "bg-gray-100 text-gray-600"
+                          }`}
+                        >
+                          {app.status}
+                        </span>
+                      </td>
+                      <td className='px-5 py-4 break-all'>
+                        <a
+                          href={app.link}
+                          className='text-blue-600 hover:underline'
+                        >
+                          {app.link || "N/A"}
+                        </a>
+                      </td>
+                      <td className='px-5 py-4 break-words max-w-xs'>
+                        {app.notes && app.notes.length > 50 ? (
+                          <>
+                            {app.isExpanded
+                              ? app.notes
+                              : `${app.notes.slice(0, 50)}...`}
+                            <button
+                              onClick={() => toggleExpand(app.id)}
+                              className='text-blue-600 hover:underline ml-2 text-sm'
+                            >
+                              {app.isExpanded ? "Less" : "More"}
+                            </button>
+                          </>
+                        ) : (
+                          app.notes || "N/A"
+                        )}
+                      </td>
+
+                      <td className='px-5 py-4 truncate max-w-xs'>
+                        {app.resumeUrl ? (
+                          <a
+                            href={app.resumeUrl}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='text-blue-600 hover:underline'
+                          >
+                            View
+                          </a>
+                        ) : (
+                          "No File"
+                        )}
+                      </td>
+                      <td className='px-5 py-4 truncate max-w-xs'>
+                        {app.coverLetterUrl ? (
+                          <a
+                            href={app.coverLetterUrl}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='text-blue-600 hover:underline'
+                          >
+                            View
+                          </a>
+                        ) : (
+                          "No File"
+                        )}
+                      </td>
+                      <td className='flex items-center justify-between px-5 py-4 truncate max-w-xs ml-2 mr-12 mt-6 space-x-4'>
+                        <button className='flex items-center justify-center rounded hover:bg-blue-100'>
+                          <FontAwesomeIcon
+                            icon={faPenToSquare}
+                            className='text-blue-600'
+                            onClick={() => {
+                              setEditApplication(app); // Pass the application being edited
+                              setEditModalOpen(true);
+                            }}
+                          />
+                          <span className='sr-only'>Edit</span>
+                        </button>
+                        <button
+                          onClick={() => deleteApplication(app.id)}
+                          className='flex items-center justify-center'
+                        >
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            className='text-blue-600'
+                          />
+                          <span className='sr-only'>Delete</span>
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
@@ -240,9 +307,18 @@ export const Applications = () => {
         </div>
       </div>
 
-      {/* Render Modal */}
+      {/* Render Add Modal */}
       {modalOpen && (
         <InputModal toggleModal={toggleModal} onSave={addApplication} />
+      )}
+      {/* Edit Modal */}
+      {editModalOpen && (
+        <EditModal
+          toggleEditModal={() => setEditModalOpen(false)}
+          application={editApplication} // Pass the application being edited
+          onSave={updateApplication} // Pass the update function
+          user={user}
+        />
       )}
     </section>
   );

@@ -16,6 +16,16 @@ export const uploadFileToStorage = async (path, file) => {
     throw error;
   }
 };
+// Update a job for a specific user
+export const updateJobForUser = async (userEmail, jobId, updatedData) => {
+  try {
+    const jobDocRef = doc(db, "Users", userEmail, "Jobs", jobId); // Reference to the job document
+    await updateDoc(jobDocRef, updatedData); // Update the document
+  } catch (error) {
+    console.error("Error updating job:", error);
+    throw error;
+  }
+};
 
 // Add a job to the logged-in user's Jobs collection
 export const addJobToUser = async (userEmail, jobData, jobId = null) => {
