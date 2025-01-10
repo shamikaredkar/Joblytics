@@ -2,6 +2,9 @@ import React from "react";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import { UserAuth } from "../../assets/utils/Auth";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { addJobToUser } from "../../assets/utils/firestoreService";
 export const InputModal = ({ toggleModal, onSave }) => {
   const [formData, setFormData] = useState({
     title: "",
@@ -14,6 +17,11 @@ export const InputModal = ({ toggleModal, onSave }) => {
     coverLetter: null,
   });
 
+  const [isSaving, setIsSaving] = useState(false); // State to track saving progress
+
+  // Get the logged-in user's details
+  const { user } = UserAuth();
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -24,10 +32,61 @@ export const InputModal = ({ toggleModal, onSave }) => {
     setFormData((prev) => ({ ...prev, [name]: files[0] }));
   };
 
-  const handleSubmit = (e) => {
+  const uploadFile = async (file, path) => {
+    const storage = getStorage();
+    const fileRef = ref(storage, path);
+    await uploadBytes(fileRef, file); // Upload file
+    return await getDownloadURL(fileRef); // Get file URL
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(formData); // Pass the form data to the parent component
-    toggleModal(); // Close the modal
+    setIsSaving(true);
+
+    try {
+      if (!user || !user.email) {
+        throw new Error("User is not logged in.");
+      }
+
+      const userEmail = user.email;
+
+      // Prepare job data
+      const jobData = {
+        title: formData.title,
+        company: formData.company,
+        location: formData.location,
+        status: formData.status,
+        link: formData.link,
+        notes: formData.notes,
+      };
+
+      // Upload files if they exist
+      if (formData.resume) {
+        const resumePath = `Users/${userEmail}/Jobs/${formData.title}_resume.pdf`;
+        jobData.resumeUrl = await uploadFile(formData.resume, resumePath);
+      }
+
+      if (formData.coverLetter) {
+        const coverLetterPath = `Users/${userEmail}/Jobs/${formData.title}_coverLetter.pdf`;
+        jobData.coverLetterUrl = await uploadFile(
+          formData.coverLetter,
+          coverLetterPath
+        );
+      }
+
+      // Save job data to Firestore
+      const jobId = await addJobToUser(userEmail, jobData);
+
+      console.log("Job added with ID:", jobId);
+
+      // Call parent onSave to update the UI
+      onSave({ id: jobId, ...jobData });
+      toggleModal();
+    } catch (error) {
+      console.error("Error saving job:", error);
+    } finally {
+      setIsSaving(false);
+    }
   };
   return (
     <div
@@ -231,8 +290,9 @@ export const InputModal = ({ toggleModal, onSave }) => {
             <button
               type='submit'
               className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5'
+              disabled={isSaving}
             >
-              Add
+              {isSaving ? "Saving..." : "Add"}
             </button>
           </form>
         </div>
