@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPenToSquare,
+  faPlus,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { InputModal } from "./InputModal"; // Import the InputModal component
 
@@ -62,6 +66,9 @@ export const Applications = () => {
                   <th scope='col' className='px-5 py-4'>
                     Cover Letter
                   </th>
+                  <th scope='col' className='px-5 py-4'>
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -98,15 +105,28 @@ export const Applications = () => {
                       </a>
                     </td>
                     <td className='px-5 py-4 break-words max-w-xs'>
-                      {app.notes}
+                      {app.notes || "N/A"}
                     </td>
                     <td className='px-5 py-4 truncate max-w-xs'>
-                      {app.resume ? app.resume.name : "No file uploaded"}
+                      {app.resume ? app.resume.name : "N/A"}
                     </td>
                     <td className='px-5 py-4 truncate max-w-xs'>
-                      {app.coverLetter
-                        ? app.coverLetter.name
-                        : "No file uploaded"}
+                      {app.coverLetter ? app.coverLetter.name : "N/A"}
+                    </td>
+                    <td className='flex justify-between px-5 py-4 truncate max-w-xs ml-2 mr-12'>
+                      <button>
+                        <FontAwesomeIcon
+                          icon={faPenToSquare}
+                          className='text-blue-600'
+                        />
+                      </button>
+                      <button>
+                        {" "}
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          className='text-blue-600'
+                        />
+                      </button>
                     </td>
                   </tr>
                 ))}
