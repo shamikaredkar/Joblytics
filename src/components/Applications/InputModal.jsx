@@ -140,7 +140,7 @@ export const InputModal = ({ toggleModal, onSave }) => {
                   htmlFor='title'
                   className='block mb-2 text-sm font-medium text-gray-900'
                 >
-                  Title
+                  Title<sup className='text-red-600 font-bold'>*</sup>
                 </label>
                 <input
                   type='text'
@@ -160,7 +160,7 @@ export const InputModal = ({ toggleModal, onSave }) => {
                   htmlFor='company'
                   className='block mb-2 text-sm font-medium text-gray-900'
                 >
-                  Company
+                  Company<sup className='text-red-600 font-bold'>*</sup>
                 </label>
                 <input
                   type='text'
@@ -180,7 +180,7 @@ export const InputModal = ({ toggleModal, onSave }) => {
                   htmlFor='location'
                   className='block mb-2 text-sm font-medium text-gray-900'
                 >
-                  Location
+                  Location<sup className='text-red-600 font-bold'>*</sup>
                 </label>
                 <input
                   type='text'
@@ -200,7 +200,7 @@ export const InputModal = ({ toggleModal, onSave }) => {
                   htmlFor='status'
                   className='block mb-2 text-sm font-medium text-gray-900'
                 >
-                  Status
+                  Status<sup className='text-red-600 font-bold'>*</sup>
                 </label>
                 <select
                   name='status'

@@ -94,7 +94,7 @@ export const ListModal = ({ keywords }) => {
       aria-hidden='true'
       className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300'
     >
-      <div className='relative w-full max-w-md p-4'>
+      <div className='relative w-full max-w-lg p-4'>
         {/* Modal Content */}
         <div className='bg-white rounded-lg shadow'>
           {/* Modal Header */}

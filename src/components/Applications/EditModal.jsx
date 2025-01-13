@@ -124,7 +124,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
                   htmlFor='title'
                   className='block mb-2 text-sm font-medium'
                 >
-                  Title
+                  Title<sup className='text-red-600 font-bold'>*</sup>
                 </label>
                 <input
                   type='text'
@@ -144,7 +144,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
                   htmlFor='company'
                   className='block mb-2 text-sm font-medium'
                 >
-                  Company
+                  Company<sup className='text-red-600 font-bold'>*</sup>
                 </label>
                 <input
                   type='text'
@@ -164,7 +164,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
                   htmlFor='location'
                   className='block mb-2 text-sm font-medium'
                 >
-                  Location
+                  Location<sup className='text-red-600 font-bold'>*</sup>
                 </label>
                 <input
                   type='text'
@@ -184,7 +184,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
                   htmlFor='status'
                   className='block mb-2 text-sm font-medium'
                 >
-                  Status
+                  Status<sup className='text-red-600 font-bold'>*</sup>
                 </label>
                 <select
                   name='status'

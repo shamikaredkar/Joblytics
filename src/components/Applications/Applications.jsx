@@ -5,6 +5,7 @@ import {
   faTrash,
   faChevronLeft,
   faChevronRight,
+  faRefresh,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { InputModal } from "./InputModal"; // Import the InputModal component
@@ -32,6 +33,7 @@ export const Applications = () => {
     (currentPage - 1) * entriesPerPage,
     currentPage * entriesPerPage
   );
+  const [jobs, setJobs] = useState([]);
   const handleNext = () => {
     if (currentPage < totalPages) {
       setCurrentPage((prev) => prev + 1);
@@ -64,7 +66,6 @@ export const Applications = () => {
 
     fetchApplications();
   }, [user]);
-
   const toggleModal = () => {
     setModalOpen(!modalOpen);
   };
@@ -74,6 +75,23 @@ export const Applications = () => {
         app.id === id ? { ...app, isExpanded: !app.isExpanded } : app
       )
     );
+  };
+
+  // Define handleRefresh function to re-fetch applications
+  const handleRefresh = async () => {
+    if (!user || !user.email) return;
+
+    try {
+      const jobsRef = collection(db, "Users", user.email, "Jobs");
+      const querySnapshot = await getDocs(jobsRef);
+      const jobs = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setApplications(jobs); // Update the applications state
+    } catch (error) {
+      console.error("Error refreshing jobs:", error);
+    }
   };
 
   const toggleEditModal = (application = null) => {
@@ -141,15 +159,23 @@ export const Applications = () => {
         {/* Header Section */}
         <div className='flex justify-between'>
           <h1 className='text-2xl font-bold'>Job Applications</h1>
-          <button
-            className='flex items-center bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg text-sm px-4 py-2 cursor-pointer'
-            onClick={toggleModal} // Open modal when clicked
-          >
-            <FontAwesomeIcon icon={faPlus} className='mr-2' />
-            <p className='flex items-center text-sm font-medium text-white'>
-              Add Application
-            </p>
-          </button>
+          <div className='flex gap-4'>
+            <button onClick={handleRefresh}>
+              <FontAwesomeIcon
+                icon={faRefresh}
+                className='mr-2 hover:text-blue-600'
+              />
+            </button>
+            <button
+              className='flex items-center bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg text-sm px-4 py-2 cursor-pointer'
+              onClick={toggleModal} // Open modal when clicked
+            >
+              <FontAwesomeIcon icon={faPlus} className='mr-2' />
+              <p className='flex items-center text-sm font-medium text-white'>
+                Add Application
+              </p>
+            </button>
+          </div>
         </div>
 
         {/* Table Section */}
