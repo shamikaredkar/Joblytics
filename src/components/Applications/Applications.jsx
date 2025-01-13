@@ -134,7 +134,7 @@ export const Applications = () => {
   };
 
   return (
-    <section className='bg-white py-3 sm:py-5'>
+    <section className='py-3 sm:py-5'>
       <div className='max-w-screen-xl mx-auto p-4'>
         {/* Header Section */}
         <div className='flex justify-between'>
@@ -299,11 +299,11 @@ export const Applications = () => {
                         {/* Delete Button */}
                         <button
                           onClick={() => deleteApplication(app.id)}
-                          className='flex items-center justify-center rounded p-2 hover:bg-blue-100'
+                          className='flex items-center justify-center rounded p-2 hover:bg-red-100'
                         >
                           <FontAwesomeIcon
                             icon={faTrash}
-                            className='text-blue-600'
+                            className='text-red-600'
                           />
                           <span className='sr-only'>Delete</span>
                         </button>
