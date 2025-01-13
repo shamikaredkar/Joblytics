@@ -3,6 +3,8 @@ import {
   faPenToSquare,
   faPlus,
   faTrash,
+  faChevronLeft,
+  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { InputModal } from "./InputModal"; // Import the InputModal component
@@ -328,22 +330,22 @@ export const Applications = () => {
                 disabled={currentPage === 1}
                 className={`px-3 py-1 text-sm rounded ${
                   currentPage === 1
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                    ? "text-gray-500 cursor-not-allowed"
+                    : "text-blue-600"
                 }`}
               >
-                Previous
+                <FontAwesomeIcon icon={faChevronLeft} />
               </button>
               <button
                 onClick={handleNext}
                 disabled={currentPage === totalPages}
                 className={`px-3 py-1 text-sm rounded ${
                   currentPage === totalPages
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                    ? "text-gray-500 cursor-not-allowed"
+                    : "text-blue-600"
                 }`}
               >
-                Next
+                <FontAwesomeIcon icon={faChevronRight} />
               </button>
             </div>
           </div>

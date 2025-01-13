@@ -12,11 +12,11 @@ export const Dashboard = () => {
       <div className='max-w-screen-xl mx-auto'>
         <div className='flex justify-between items-start gap-4 p-4'>
           {/* Keywords Section */}
-          <div className='flex-1 p-4 bg-white rounded-lg shadow'>
+          <div className='flex-1 p-4 bg-white rounded-lg shadow-lg'>
             <Keywords />
           </div>
           {/* Score Section */}
-          <div className='flex-1 p-4 bg-white rounded-lg shadow'>
+          <div className='flex-1 p-4 bg-white rounded-lg shadow-lg'>
             <Score />
           </div>
         </div>

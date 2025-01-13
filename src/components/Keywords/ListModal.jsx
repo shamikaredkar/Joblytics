@@ -153,7 +153,7 @@ export const ListModal = () => {
                     className={`px-3 py-1.5 text-sm rounded ${
                       currentPage === 1
                         ? "text-gray-500 cursor-not-allowed"
-                        : "bg-transparent hover:bg-neutral-100 text-gray-700"
+                        : "hover:bg-neutral-100 text-blue-600"
                     }`}
                     onClick={handlePrevious}
                     disabled={currentPage === 1}
@@ -166,7 +166,7 @@ export const ListModal = () => {
                     <button
                       className={`px-3 py-1.5 text-sm rounded ${
                         currentPage === index + 1
-                          ? "text-blue-600"
+                          ? "text-blue-600 underline "
                           : "bg-transparent hover:bg-neutral-100 text-gray-700"
                       }`}
                       onClick={() => setCurrentPage(index + 1)}
@@ -180,7 +180,7 @@ export const ListModal = () => {
                     className={`px-3 py-1.5 text-sm rounded ${
                       currentPage === totalPages
                         ? "text-gray-500 cursor-not-allowed"
-                        : "bg-transparent hover:bg-neutral-100 text-gray-700"
+                        : "hover:bg-neutral-100 text-blue-600"
                     }`}
                     onClick={handleNext}
                     disabled={currentPage === totalPages}
