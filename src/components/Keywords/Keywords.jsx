@@ -14,7 +14,7 @@ export const Keywords = () => {
     setLoading(true);
     try {
       const extractedContent = await extractKeywords(jobDescription);
-      setKeywords(extractedContent);
+      setKeywords(extractedContent); // Save extracted keywords
     } catch (error) {
       console.error("Failed to extract keywords:", error);
     } finally {
@@ -52,14 +52,12 @@ export const Keywords = () => {
         <ul className='flex flex-wrap gap-2 mt-2'>
           {keywords.length > 0 ? (
             keywords.map((keyword, index) => (
-              <>
-                <li
-                  key={index}
-                  className='py-1 px-4 bg-blue-100 rounded-full text-xs font-medium text-blue-600'
-                >
-                  {keyword}
-                </li>
-              </>
+              <li
+                key={index}
+                className='py-1 px-4 bg-blue-100 rounded-full text-xs font-medium text-blue-600'
+              >
+                {keyword}
+              </li>
             ))
           ) : (
             <p className='text-gray-500'>No keywords extracted yet.</p>
@@ -75,8 +73,8 @@ export const Keywords = () => {
           </button>
         )}
       </div>
-      {/* Conditionally render the modal */}
-      {isModalVisible && <ListModal />}
+      {/* Pass keywords to the modal */}
+      {isModalVisible && <ListModal keywords={keywords} />}
     </section>
   );
 };

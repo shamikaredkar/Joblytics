@@ -5,11 +5,11 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../assets/utils/firebase";
 import { UserAuth } from "../../assets/utils/Auth";
 
-export const ListModal = () => {
+export const ListModal = ({ keywords }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [jobs, setJobs] = useState([]); // State to store jobs
   const [selectedJobId, setSelectedJobId] = useState(null); // Track selected job
@@ -70,12 +70,19 @@ export const ListModal = () => {
     }
   };
 
-  const handleApply = () => {
-    if (selectedJobId) {
-      console.log("Applying for job with ID:", selectedJobId);
-      // Add application logic here
-    } else {
-      alert("Please select a job to apply!");
+  const handleApply = async () => {
+    if (!selectedJobId) {
+      return;
+    }
+
+    try {
+      const jobRef = doc(db, "Users", user.email, "Jobs", selectedJobId);
+      await updateDoc(jobRef, {
+        notes: keywords.join(", "), // Store keywords as a comma-separated string
+      });
+      closeModal(); // Close the modal after applying
+    } catch (error) {
+      console.error("Error updating job notes:", error);
     }
   };
 
@@ -91,8 +98,9 @@ export const ListModal = () => {
         {/* Modal Content */}
         <div className='bg-white rounded-lg shadow'>
           {/* Modal Header */}
-          <div className='flex justify-between items-center p-4 border-b rounded-t'>
+          <div className='flex justify-between items-center p-4 rounded-t'>
             <h3 className='text-lg font-semibold text-gray-900'>Your Jobs</h3>
+
             <button
               type='button'
               className='text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg p-2'
@@ -166,7 +174,7 @@ export const ListModal = () => {
                     <button
                       className={`px-3 py-1.5 text-sm rounded ${
                         currentPage === index + 1
-                          ? "text-blue-600 underline "
+                          ? "text-blue-600 underline"
                           : "bg-transparent hover:bg-neutral-100 text-gray-700"
                       }`}
                       onClick={() => setCurrentPage(index + 1)}
@@ -193,7 +201,7 @@ export const ListModal = () => {
 
             {/* Apply Button */}
             <button
-              className='w-full text-blue-600 rounded-lg font-medium text-sm py-2.5 mt-4'
+              className='w-full text-blue-600 hover:text-blue-800 rounded-lg font-semibold text-md py-2.5 mt-4'
               onClick={handleApply}
             >
               Apply
