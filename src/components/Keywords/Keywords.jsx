@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
 import { extractKeywords } from "../../assets/utils/geminiService";
 
 export const Keywords = () => {
@@ -41,21 +41,28 @@ export const Keywords = () => {
         <FontAwesomeIcon icon={faWandMagicSparkles} className='mr-2' />
         {loading ? "Extracting..." : "Extract Keywords"}
       </button>
-      <div className='mt-6'>
+      <div className='mt-6 bg-gray-50 p-4 rounded-lg'>
+        <h1 className='font-semibold text-sm mb-4'>Extracted Keywords:</h1>
         <ul className='flex flex-wrap gap-2 mt-2'>
           {keywords.length > 0 ? (
             keywords.map((keyword, index) => (
-              <li
-                key={index}
-                className='py-1 px-4 bg-blue-100 rounded-full text-xs font-medium text-blue-600'
-              >
-                {keyword}
-              </li>
+              <>
+                <li
+                  key={index}
+                  className='py-1 px-4 bg-blue-100 rounded-full text-xs font-medium text-blue-600'
+                >
+                  {keyword}
+                </li>
+              </>
             ))
           ) : (
             <p className='text-gray-500'>No keywords extracted yet.</p>
           )}
         </ul>
+        <button className='flex justify-center items-center p-2 gap-2 text-blue-600 text-xs hover:bg-gray-200 rounded-lg mt-4'>
+          <FontAwesomeIcon icon={faPlus} />
+          <p className=''>ADD</p>
+        </button>
       </div>
     </section>
   );
