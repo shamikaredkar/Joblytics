@@ -1,31 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
+import { extractKeywords } from "../../assets/utils/geminiService";
 
 export const Keywords = () => {
+  const [jobDescription, setJobDescription] = useState("");
+  const [keywords, setKeywords] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleExtractKeywords = async () => {
+    setLoading(true);
+    try {
+      const extractedContent = await extractKeywords(jobDescription); // Get the full content
+      setKeywords(extractedContent); // Save the content in the state
+    } catch (error) {
+      console.error("Failed to extract keywords:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <>
-      <section className='bg-white py-4 rounded-lg'>
-        <h1
-          href='#'
-          className='block max-w-sm p-2 bg-white rounded-lg font-bold text-2xl'
-        >
-          Make Your Resume ATS Friendly
-        </h1>
-        <textarea
-          id='message'
-          rows='10'
-          className='block mt-4 p-4 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-400'
-          placeholder='Paste job description here.'
-        ></textarea>
-        <button className='flex justify-center items-center w-full bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg text-sm py-2 cursor-pointer mt-6'>
-          <FontAwesomeIcon icon={faWandMagicSparkles} className='mr-2' />
-          <p className='text-sm font-medium text-white'>Extract Keywords</p>
-        </button>
-        <div>
-          <h2 className=' mt-4 text-md font-semibold'>Extracted Keywords:</h2>
-        </div>
-      </section>
-    </>
+    <section className='bg-white py-4 rounded-lg'>
+      <h1 className='block max-w-sm p-2 bg-white rounded-lg font-bold text-2xl'>
+        Make Your Resume ATS Friendly
+      </h1>
+      <textarea
+        id='message'
+        rows='10'
+        className='block mt-4 p-4 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-400'
+        placeholder='Paste job description here.'
+        value={jobDescription}
+        onChange={(e) => setJobDescription(e.target.value)}
+      ></textarea>
+      <button
+        className='flex justify-center items-center w-full bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg text-sm py-2 cursor-pointer mt-6'
+        onClick={handleExtractKeywords}
+        disabled={loading}
+      >
+        <FontAwesomeIcon icon={faWandMagicSparkles} className='mr-2' />
+        {loading ? "Extracting..." : "Extract Keywords"}
+      </button>
+      <div className='mt-6'>
+        <ul className='flex flex-wrap gap-2 mt-2'>
+          {keywords.length > 0 ? (
+            keywords.map((keyword, index) => (
+              <li
+                key={index}
+                className='py-1 px-4 bg-blue-100 rounded-full text-xs font-medium text-blue-600'
+              >
+                {keyword}
+              </li>
+            ))
+          ) : (
+            <p className='text-gray-500'>No keywords extracted yet.</p>
+          )}
+        </ul>
+      </div>
+    </section>
   );
 };
