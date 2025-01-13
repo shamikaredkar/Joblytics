@@ -2,22 +2,28 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
 import { extractKeywords } from "../../assets/utils/geminiService";
+import { ListModal } from "./ListModal";
 
 export const Keywords = () => {
   const [jobDescription, setJobDescription] = useState("");
   const [keywords, setKeywords] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleExtractKeywords = async () => {
     setLoading(true);
     try {
-      const extractedContent = await extractKeywords(jobDescription); // Get the full content
-      setKeywords(extractedContent); // Save the content in the state
+      const extractedContent = await extractKeywords(jobDescription);
+      setKeywords(extractedContent);
     } catch (error) {
       console.error("Failed to extract keywords:", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const toggleModal = () => {
+    setIsModalVisible((prev) => !prev); // Toggle modal visibility
   };
 
   return (
@@ -59,11 +65,18 @@ export const Keywords = () => {
             <p className='text-gray-500'>No keywords extracted yet.</p>
           )}
         </ul>
-        <button className='flex justify-center items-center p-2 gap-2 text-blue-600 text-xs hover:bg-gray-200 rounded-lg mt-4'>
-          <FontAwesomeIcon icon={faPlus} />
-          <p className=''>ADD</p>
-        </button>
+        {keywords.length > 0 && (
+          <button
+            className='flex justify-center items-center p-2 gap-2 text-blue-600 text-xs hover:bg-gray-200 rounded-lg mt-4'
+            onClick={toggleModal}
+          >
+            <FontAwesomeIcon icon={faPlus} />
+            <p>ADD</p>
+          </button>
+        )}
       </div>
+      {/* Conditionally render the modal */}
+      {isModalVisible && <ListModal />}
     </section>
   );
 };
