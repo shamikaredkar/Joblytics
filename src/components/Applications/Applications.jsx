@@ -248,6 +248,8 @@ export const Applications = () => {
                               ? "bg-yellow-100 text-yellow-600"
                               : app.status === "Applied"
                               ? "bg-green-100 text-green-600"
+                              : app.status === "Shortlist"
+                              ? "bg-gray-200 text-gray-700"
                               : "bg-gray-100 text-gray-600"
                           }`}
                         >

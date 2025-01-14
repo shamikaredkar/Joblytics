@@ -213,6 +213,8 @@ export const InputModal = ({ toggleModal, onSave }) => {
                   <option value='' disabled>
                     Select
                   </option>
+                  <option value='Shortlist'>Shortlist</option>
+
                   <option value='Applied'>Applied</option>
                   <option value='Interview'>Interview</option>
                   <option value='Rejected'>Rejected</option>

@@ -197,6 +197,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
                   <option value='' disabled>
                     Select
                   </option>
+                  <option value='Shortlist'>Shortlist</option>
                   <option value='Applied'>Applied</option>
                   <option value='Interview'>Interview</option>
                   <option value='Rejected'>Rejected</option>
