@@ -31,9 +31,12 @@ export const Keywords = () => {
       <h1 className='block max-w-sm p-2 bg-white rounded-lg font-bold text-2xl'>
         Make Your Resume ATS Friendly
       </h1>
+      <h2 className='pb-5 px-2 text-sm font-regular text-gray-400'>
+        Extract Keywords from Job Descriptions to Perfect Your Resume!
+      </h2>
       <textarea
         id='message'
-        rows='10'
+        rows='8'
         className='block mt-4 p-4 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-400'
         placeholder='Paste job description here.'
         value={jobDescription}
