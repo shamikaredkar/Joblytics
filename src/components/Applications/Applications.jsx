@@ -7,6 +7,7 @@ import {
   faChevronRight,
   faRefresh,
   faSearch,
+  faFilter,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { InputModal } from "./InputModal"; // Import the InputModal component
@@ -186,6 +187,16 @@ export const Applications = () => {
                 className='mr-2 hover:text-blue-600'
               />
             </button>
+            <select
+              id='underline_select'
+              className='p-2 text-sm font-semibold text-gray-500 bg-white border rounded-lg'
+            >
+              <option selected>All</option>
+              <option value='Shortlist'>Shortlist</option>
+              <option value='Applied'>Applied</option>
+              <option value='Interview'>Interview</option>
+              <option value='Rejected'>Rejected</option>
+            </select>
             <label htmlFor='table-search' className='sr-only'>
               Search
             </label>
