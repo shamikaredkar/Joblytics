@@ -10,7 +10,7 @@ import {
   faFilter,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { InputModal } from "./InputModal"; // Import the InputModal component
+import { InputModal } from "./InputModal";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../assets/utils/firebase";
 import { UserAuth } from "../../assets/utils/Auth";
@@ -22,19 +22,19 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 export const Applications = () => {
   let today = new Date().toISOString().slice(0, 10);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false); // Add Modal
-  const [editModalOpen, setEditModalOpen] = useState(false); // Edit Modal
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [applications, setApplications] = useState([]);
-  const [selectedApplication, setSelectedApplication] = useState(null); // Track the application being edited
+  const [selectedApplication, setSelectedApplication] = useState(null);
   const [editApplication, setEditApplication] = useState(null);
-  const { user } = UserAuth(); // Get logged-in user details
+  const { user } = UserAuth();
   const [currentPage, setCurrentPage] = useState(1);
-  const entriesPerPage = 5; // Number of entries per page
+  const entriesPerPage = 5;
   const totalPages = Math.ceil(applications.length / entriesPerPage);
 
-  const [searchTerm, setSearchTerm] = useState(""); // Add search term state
+  const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
-  const [filteredApplications, setFilteredApplications] = useState([]); // Add filtered applications state
+  const [filteredApplications, setFilteredApplications] = useState([]);
   const handleNext = () => {
     if (currentPage < totalPages) {
       setCurrentPage((prev) => prev + 1);
@@ -51,7 +51,6 @@ export const Applications = () => {
     }
   };
 
-  // Fetch job applications from Firestore
   useEffect(() => {
     const fetchApplications = async () => {
       if (!user || !user.email) return;
@@ -87,28 +86,24 @@ export const Applications = () => {
     const value = event.target.value.toLowerCase();
     setSearchTerm(value);
 
-    // Filter applications based on the search term
     const filtered = applications.filter((app) =>
       app.company.toLowerCase().includes(value)
     );
     setFilteredApplications(filtered);
   };
   const handleFilterChange = (event) => {
-    setFilterStatus(event.target.value); // Update the filter state
+    setFilterStatus(event.target.value);
   };
 
-  // Update filteredApplications whenever applications or searchTerm changes
   useEffect(() => {
     let filtered = applications;
 
-    // Apply search filter
     if (searchTerm) {
       filtered = filtered.filter((app) =>
         app.company.toLowerCase().includes(searchTerm)
       );
     }
 
-    // Apply status filter
     if (filterStatus !== "All") {
       filtered = filtered.filter((app) => app.status === filterStatus);
     }
@@ -116,7 +111,6 @@ export const Applications = () => {
     setFilteredApplications(filtered);
   }, [applications, searchTerm, filterStatus]);
 
-  // Define handleRefresh function to re-fetch applications
   const handleRefresh = async () => {
     if (!user || !user.email) return;
 
@@ -127,14 +121,14 @@ export const Applications = () => {
         id: doc.id,
         ...doc.data(),
       }));
-      setApplications(jobs); // Update the applications state
+      setApplications(jobs);
     } catch (error) {
       console.error("Error refreshing jobs:", error);
     }
   };
 
   const toggleEditModal = (application = null) => {
-    setSelectedApplication(application); // Set the application being edited
+    setSelectedApplication(application);
     setEditModalOpen(!editModalOpen);
   };
 
@@ -149,30 +143,26 @@ export const Applications = () => {
     try {
       const storage = getStorage();
 
-      // Check if files are included in updatedData
       if (updatedData.resume) {
         const resumePath = `Users/${user.email}/Jobs/${jobId}/Resume/Resume.pdf`;
         const resumeRef = ref(storage, resumePath);
-        await uploadBytes(resumeRef, updatedData.resume); // Upload the file
-        updatedData.existingResume = await getDownloadURL(resumeRef); // Get the URL
+        await uploadBytes(resumeRef, updatedData.resume);
+        updatedData.existingResume = await getDownloadURL(resumeRef);
       }
 
       if (updatedData.coverLetter) {
         const coverLetterPath = `Users/${user.email}/Jobs/${jobId}/CoverLetter/CoverLetter.pdf`;
         const coverLetterRef = ref(storage, coverLetterPath);
-        await uploadBytes(coverLetterRef, updatedData.coverLetter); // Upload the file
-        updatedData.existingCoverLetter = await getDownloadURL(coverLetterRef); // Get the URL
+        await uploadBytes(coverLetterRef, updatedData.coverLetter);
+        updatedData.existingCoverLetter = await getDownloadURL(coverLetterRef);
       }
 
-      // Remove file objects before Firestore update
       delete updatedData.resume;
       delete updatedData.coverLetter;
 
-      // Update Firestore document
       const jobsRef = doc(db, "Users", user.email, "Jobs", jobId);
       await updateDoc(jobsRef, updatedData);
 
-      // Update local state
       setApplications((prev) =>
         prev.map((app) => (app.id === jobId ? { ...app, ...updatedData } : app))
       );
@@ -198,49 +188,46 @@ export const Applications = () => {
         {/* Header Section */}
         <div className='flex justify-between'>
           <h1 className='text-2xl font-bold'>Job Applications</h1>
-          <div className='flex gap-4'>
-            <button onClick={handleRefresh}>
+          <div className='flex gap-4 items-center'>
+            <button
+              className='h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg px-4'
+              onClick={handleRefresh}
+            >
               <FontAwesomeIcon
                 icon={faRefresh}
-                className='mr-2 hover:text-blue-600'
+                className='hover:text-blue-600'
               />
             </button>
             <select
               id='underline_select'
-              className='p-2 text-sm font-semibold text-gray-500 bg-white border rounded-lg'
-              value={filterStatus} // Bind the state to the select value
+              className='h-10 p-2 text-sm font-semibold text-gray-500 bg-white border rounded-lg'
+              value={filterStatus}
               onChange={handleFilterChange}
             >
-              <option selected>All</option>
+              <option value='All'>All</option>
               <option value='Shortlist'>Shortlist</option>
               <option value='Applied'>Applied</option>
               <option value='Interview'>Interview</option>
               <option value='Rejected'>Rejected</option>
             </select>
-            <label htmlFor='table-search' className='sr-only'>
-              Search
-            </label>
-            <div className='relative mt-1'>
+            <div className='relative'>
               <div className='absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none'>
                 <FontAwesomeIcon icon={faSearch} className='text-blue-600' />
               </div>
               <input
                 type='text'
                 id='table-search'
-                className='bg-white border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5'
-                placeholder='Search for company name'
+                className='h-10 bg-white border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 pl-10 pr-4'
+                placeholder='Search for company'
                 onChange={handleSearch}
               />
             </div>
-
             <button
-              className='flex items-center bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg text-sm px-4 py-2 cursor-pointer'
-              onClick={toggleModal} // Open modal when clicked
+              className='h-10 flex items-center bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg px-4 cursor-pointer'
+              onClick={toggleModal}
             >
               <FontAwesomeIcon icon={faPlus} className='mr-2' />
-              <p className='flex items-center text-sm font-medium text-white'>
-                Add Application
-              </p>
+              <p className='text-sm font-medium'>Add Application</p>
             </button>
           </div>
         </div>
@@ -382,7 +369,7 @@ export const Applications = () => {
                         <button
                           className='flex items-center justify-center rounded p-2 hover:bg-blue-100'
                           onClick={() => {
-                            setEditApplication(app); // Pass the application being edited
+                            setEditApplication(app);
                             setEditModalOpen(true);
                           }}
                         >
@@ -455,8 +442,8 @@ export const Applications = () => {
       {editModalOpen && (
         <EditModal
           toggleEditModal={() => setEditModalOpen(false)}
-          application={editApplication} // Pass the application being edited
-          onSave={updateApplication} // Pass the update function
+          application={editApplication}
+          onSave={updateApplication}
           user={user}
         />
       )}

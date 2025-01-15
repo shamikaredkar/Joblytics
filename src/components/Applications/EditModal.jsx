@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
   const [formData, setFormData] = useState({
@@ -9,13 +11,12 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
     status: application?.status || "",
     link: application?.link || "",
     notes: application?.notes || "",
-    resume: null, // New file to be uploaded
-    coverLetter: null, // New file to be uploaded
-    existingResume: application?.resumeUrl || null, // Existing file URL
-    existingCoverLetter: application?.coverLetterUrl || null, // Existing file URL
+    resume: null,
+    coverLetter: null,
+    existingResume: application?.resumeUrl || null,
+    existingCoverLetter: application?.coverLetterUrl || null,
   });
 
-  // Update formData when application prop changes
   useEffect(() => {
     if (application) {
       setFormData({
@@ -33,13 +34,11 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
     }
   }, [application]);
 
-  // Handle input field changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle file input changes
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     setFormData((prev) => ({ ...prev, [name]: files[0] }));
@@ -52,29 +51,25 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
     try {
       const storage = getStorage();
 
-      // Handle resume upload
       if (formData.resume) {
         const resumePath = `Users/${user.email}/Jobs/${application.id}/Resume/Resume.pdf`;
         const resumeRef = ref(storage, resumePath);
         await uploadBytes(resumeRef, formData.resume);
-        updatedData.resumeUrl = await getDownloadURL(resumeRef); // Update resumeUrl
+        updatedData.resumeUrl = await getDownloadURL(resumeRef);
       }
 
-      // Handle cover letter upload
       if (formData.coverLetter) {
         const coverLetterPath = `Users/${user.email}/Jobs/${application.id}/CoverLetter/CoverLetter.pdf`;
         const coverLetterRef = ref(storage, coverLetterPath);
         await uploadBytes(coverLetterRef, formData.coverLetter);
-        updatedData.coverLetterUrl = await getDownloadURL(coverLetterRef); // Update coverLetterUrl
+        updatedData.coverLetterUrl = await getDownloadURL(coverLetterRef);
       }
 
-      // Remove file objects before Firestore update
       delete updatedData.resume;
       delete updatedData.coverLetter;
 
-      // Pass updated data and application ID to parent
       onSave(updatedData, application.id);
-      toggleEditModal(); // Close modal
+      toggleEditModal();
     } catch (error) {
       console.error("Error uploading files or updating application:", error);
     }
@@ -97,27 +92,14 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
               className='text-gray-400 hover:text-gray-900 hover:bg-gray-200 rounded-lg text-sm p-2'
               onClick={toggleEditModal}
             >
-              <svg
-                className='w-4 h-4'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                viewBox='0 0 24 24'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M6 18L18 6M6 6l12 12'
-                ></path>
-              </svg>
+              <FontAwesomeIcon icon={faTimes} />
               <span className='sr-only'>Close modal</span>
             </button>
           </div>
 
           {/* Modal Body */}
           <form className='p-4' onSubmit={handleSubmit}>
-            <div className='grid gap-4 mb-4 grid-cols-2'>
+            <div className='grid gap-10 mb-4 grid-cols-2'>
               {/* Title Input */}
               <div className='col-span-2 sm:col-span-1'>
                 <label

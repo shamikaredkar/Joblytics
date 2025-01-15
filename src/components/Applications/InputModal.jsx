@@ -1,5 +1,5 @@
 import React from "react";
-import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faUpload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { UserAuth } from "../../assets/utils/Auth";
@@ -17,9 +17,8 @@ export const InputModal = ({ toggleModal, onSave }) => {
     coverLetter: null,
   });
 
-  const [isSaving, setIsSaving] = useState(false); // State to track saving progress
+  const [isSaving, setIsSaving] = useState(false);
 
-  // Get the logged-in user's details
   const { user } = UserAuth();
 
   const handleInputChange = (e) => {
@@ -35,8 +34,8 @@ export const InputModal = ({ toggleModal, onSave }) => {
   const uploadFile = async (file, path) => {
     const storage = getStorage();
     const fileRef = ref(storage, path);
-    await uploadBytes(fileRef, file); // Upload file
-    return await getDownloadURL(fileRef); // Get file URL
+    await uploadBytes(fileRef, file);
+    return await getDownloadURL(fileRef);
   };
 
   const handleSubmit = async (e) => {
@@ -50,7 +49,6 @@ export const InputModal = ({ toggleModal, onSave }) => {
 
       const userEmail = user.email;
 
-      // Step 1: Create the Firestore document and get the jobId
       const jobData = {
         title: formData.title,
         company: formData.company,
@@ -62,13 +60,12 @@ export const InputModal = ({ toggleModal, onSave }) => {
 
       const jobId = await addJobToUser(userEmail, jobData);
 
-      // Step 2: Upload files to Firebase Storage
-      const updatedJobData = { ...jobData }; // Copy initial job data
+      const updatedJobData = { ...jobData };
 
       if (formData.resume) {
         const resumePath = `Users/${userEmail}/Jobs/${jobId}/Resume/Resume.pdf`;
         const resumeUrl = await uploadFile(formData.resume, resumePath);
-        updatedJobData.resumeUrl = resumeUrl; // Add resume URL to job data
+        updatedJobData.resumeUrl = resumeUrl;
       }
 
       if (formData.coverLetter) {
@@ -77,15 +74,13 @@ export const InputModal = ({ toggleModal, onSave }) => {
           formData.coverLetter,
           coverLetterPath
         );
-        updatedJobData.coverLetterUrl = coverLetterUrl; // Add cover letter URL to job data
+        updatedJobData.coverLetterUrl = coverLetterUrl;
       }
 
-      // Step 3: Update the Firestore document with file URLs
-      await addJobToUser(userEmail, updatedJobData, jobId); // Update the same document
+      await addJobToUser(userEmail, updatedJobData, jobId);
 
       console.log("Job added with files successfully:", jobId);
 
-      // Call parent onSave to update the UI
       onSave({ id: jobId, ...updatedJobData });
       toggleModal();
     } catch (error) {
@@ -113,20 +108,7 @@ export const InputModal = ({ toggleModal, onSave }) => {
               className='text-gray-400 hover:text-gray-900 hover:bg-gray-200 rounded-lg text-sm p-2'
               onClick={toggleModal}
             >
-              <svg
-                className='w-4 h-4'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                viewBox='0 0 24 24'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M6 18L18 6M6 6l12 12'
-                ></path>
-              </svg>
+              <FontAwesomeIcon icon={faTimes} />
               <span className='sr-only'>Close modal</span>
             </button>
           </div>
