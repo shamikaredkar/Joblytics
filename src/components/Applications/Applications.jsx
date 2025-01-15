@@ -33,6 +33,7 @@ export const Applications = () => {
   const totalPages = Math.ceil(applications.length / entriesPerPage);
 
   const [searchTerm, setSearchTerm] = useState(""); // Add search term state
+  const [filterStatus, setFilterStatus] = useState("All");
   const [filteredApplications, setFilteredApplications] = useState([]); // Add filtered applications state
   const handleNext = () => {
     if (currentPage < totalPages) {
@@ -92,11 +93,28 @@ export const Applications = () => {
     );
     setFilteredApplications(filtered);
   };
+  const handleFilterChange = (event) => {
+    setFilterStatus(event.target.value); // Update the filter state
+  };
 
   // Update filteredApplications whenever applications or searchTerm changes
   useEffect(() => {
-    setFilteredApplications(applications);
-  }, [applications]);
+    let filtered = applications;
+
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter((app) =>
+        app.company.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    // Apply status filter
+    if (filterStatus !== "All") {
+      filtered = filtered.filter((app) => app.status === filterStatus);
+    }
+
+    setFilteredApplications(filtered);
+  }, [applications, searchTerm, filterStatus]);
 
   // Define handleRefresh function to re-fetch applications
   const handleRefresh = async () => {
@@ -190,6 +208,8 @@ export const Applications = () => {
             <select
               id='underline_select'
               className='p-2 text-sm font-semibold text-gray-500 bg-white border rounded-lg'
+              value={filterStatus} // Bind the state to the select value
+              onChange={handleFilterChange}
             >
               <option selected>All</option>
               <option value='Shortlist'>Shortlist</option>
