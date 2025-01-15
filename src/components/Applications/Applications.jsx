@@ -6,6 +6,7 @@ import {
   faChevronLeft,
   faChevronRight,
   faRefresh,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { InputModal } from "./InputModal"; // Import the InputModal component
@@ -29,16 +30,18 @@ export const Applications = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const entriesPerPage = 5; // Number of entries per page
   const totalPages = Math.ceil(applications.length / entriesPerPage);
-  const paginatedApplications = applications.slice(
-    (currentPage - 1) * entriesPerPage,
-    currentPage * entriesPerPage
-  );
-  const [jobs, setJobs] = useState([]);
+
+  const [searchTerm, setSearchTerm] = useState(""); // Add search term state
+  const [filteredApplications, setFilteredApplications] = useState([]); // Add filtered applications state
   const handleNext = () => {
     if (currentPage < totalPages) {
       setCurrentPage((prev) => prev + 1);
     }
   };
+  const paginatedFilteredApplications = filteredApplications.slice(
+    (currentPage - 1) * entriesPerPage,
+    currentPage * entriesPerPage
+  );
 
   const handlePrevious = () => {
     if (currentPage > 1) {
@@ -69,6 +72,7 @@ export const Applications = () => {
   const toggleModal = () => {
     setModalOpen(!modalOpen);
   };
+
   const toggleExpand = (id) => {
     setApplications((prev) =>
       prev.map((app) =>
@@ -76,6 +80,22 @@ export const Applications = () => {
       )
     );
   };
+
+  const handleSearch = (event) => {
+    const value = event.target.value.toLowerCase();
+    setSearchTerm(value);
+
+    // Filter applications based on the search term
+    const filtered = applications.filter((app) =>
+      app.company.toLowerCase().includes(value)
+    );
+    setFilteredApplications(filtered);
+  };
+
+  // Update filteredApplications whenever applications or searchTerm changes
+  useEffect(() => {
+    setFilteredApplications(applications);
+  }, [applications]);
 
   // Define handleRefresh function to re-fetch applications
   const handleRefresh = async () => {
@@ -166,6 +186,22 @@ export const Applications = () => {
                 className='mr-2 hover:text-blue-600'
               />
             </button>
+            <label htmlFor='table-search' className='sr-only'>
+              Search
+            </label>
+            <div className='relative mt-1'>
+              <div className='absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none'>
+                <FontAwesomeIcon icon={faSearch} className='text-blue-600' />
+              </div>
+              <input
+                type='text'
+                id='table-search'
+                className='bg-white border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5'
+                placeholder='Search for company name'
+                onChange={handleSearch}
+              />
+            </div>
+
             <button
               className='flex items-center bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg text-sm px-4 py-2 cursor-pointer'
               onClick={toggleModal} // Open modal when clicked
@@ -217,14 +253,14 @@ export const Applications = () => {
                 </tr>
               </thead>
               <tbody>
-                {paginatedApplications.length === 0 ? (
+                {paginatedFilteredApplications.length === 0 ? (
                   <tr>
                     <td colSpan='10' className='text-center py-4 border-b'>
-                      No applications found. Add a new application!
+                      No applications found.
                     </td>
                   </tr>
                 ) : (
-                  paginatedApplications.map((app) => (
+                  paginatedFilteredApplications.map((app) => (
                     <tr key={app.id} className='border-b hover:bg-gray-100'>
                       <td className='px-5 py-4 break-words whitespace-normal  truncate max-w-xs'>
                         {today}
@@ -261,7 +297,7 @@ export const Applications = () => {
                           href={app.link}
                           className='text-blue-600 hover:underline'
                         >
-                          {app.link || "N/A"}
+                          {"Link" || "N/A"}
                         </a>
                       </td>
                       <td className='px-5 py-4 break-words max-w-xs'>
