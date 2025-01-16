@@ -366,12 +366,13 @@ export const Applications = () => {
                         </span>
                       </td>
                       <td className='px-5 py-4 break-all'>
-                        {app.link ? (
+                        {app.link && app.link.trim() ? (
                           <a
                             href={
-                              app.link.startsWith("http")
+                              app.link.startsWith("http://") ||
+                              app.link.startsWith("https://")
                                 ? app.link
-                                : `https://${app.link}`
+                                : `https://${app.link.trim()}`
                             }
                             target='_blank'
                             rel='noopener noreferrer'
