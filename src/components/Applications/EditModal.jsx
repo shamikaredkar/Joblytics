@@ -80,11 +80,11 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
       className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'
       aria-hidden='true'
     >
-      <div className='relative w-full max-w-2xl p-4'>
-        <div className='bg-white rounded-lg shadow'>
+      <div className='relative w-full max-w-2xl px-4 sm:px-6 md:px-8 lg:px-10'>
+        <div className='bg-white rounded-lg shadow max-h-[calc(100vh-40px)] overflow-y-auto'>
           {/* Modal Header */}
           <div className='flex items-center justify-between p-4 border-b rounded-t'>
-            <h3 className='text-lg font-semibold text-gray-900'>
+            <h3 className='text-lg sm:text-xl font-semibold text-gray-900'>
               Edit Application
             </h3>
             <button
@@ -98,10 +98,10 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
           </div>
 
           {/* Modal Body */}
-          <form className='p-4' onSubmit={handleSubmit}>
-            <div className='grid gap-10 mb-4 grid-cols-2'>
+          <form className='p-4 sm:p-6 md:p-8' onSubmit={handleSubmit}>
+            <div className='grid gap-4 sm:gap-6 md:gap-8 mb-4 sm:grid-cols-1 md:grid-cols-2'>
               {/* Title Input */}
-              <div className='col-span-2 sm:col-span-1'>
+              <div>
                 <label
                   htmlFor='title'
                   className='block mb-2 text-sm font-medium'
@@ -112,7 +112,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
                   type='text'
                   name='title'
                   id='title'
-                  className='bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
+                  className='bg-gray-50 border border-gray-300 text-sm sm:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
                   placeholder='Software Developer'
                   value={formData.title}
                   onChange={handleInputChange}
@@ -121,7 +121,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
               </div>
 
               {/* Company Input */}
-              <div className='col-span-2 sm:col-span-1'>
+              <div>
                 <label
                   htmlFor='company'
                   className='block mb-2 text-sm font-medium'
@@ -132,7 +132,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
                   type='text'
                   name='company'
                   id='company'
-                  className='bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
+                  className='bg-gray-50 border border-gray-300 text-sm sm:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
                   placeholder='Google'
                   value={formData.company}
                   onChange={handleInputChange}
@@ -141,7 +141,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
               </div>
 
               {/* Location Input */}
-              <div className='col-span-2 sm:col-span-1'>
+              <div>
                 <label
                   htmlFor='location'
                   className='block mb-2 text-sm font-medium'
@@ -152,7 +152,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
                   type='text'
                   name='location'
                   id='location'
-                  className='bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
+                  className='bg-gray-50 border border-gray-300 text-sm sm:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
                   placeholder='California, LA'
                   value={formData.location}
                   onChange={handleInputChange}
@@ -161,7 +161,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
               </div>
 
               {/* Status Select */}
-              <div className='col-span-2 sm:col-span-1'>
+              <div>
                 <label
                   htmlFor='status'
                   className='block mb-2 text-sm font-medium'
@@ -171,7 +171,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
                 <select
                   name='status'
                   id='status'
-                  className='bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
+                  className='bg-gray-50 border border-gray-300 text-sm sm:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
                   value={formData.status}
                   onChange={handleInputChange}
                   required
@@ -185,12 +185,12 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
                   <option value='Rejected'>Rejected</option>
                 </select>
               </div>
-              {/* Link Input */}
+
               {/* Link Input */}
               <div className='col-span-2'>
                 <label
                   htmlFor='link'
-                  className='block mb-2 text-sm font-medium text-gray-900'
+                  className='block mb-2 text-sm font-medium'
                 >
                   Link
                 </label>
@@ -198,7 +198,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
                   type='text'
                   name='link'
                   id='link'
-                  className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
+                  className='bg-gray-50 border border-gray-300 text-sm sm:text-base rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
                   placeholder='Paste link to the job'
                   value={formData.link}
                   onChange={handleInputChange}
@@ -209,7 +209,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
               <div className='col-span-2'>
                 <label
                   htmlFor='notes'
-                  className='block mb-2 text-sm font-medium text-gray-900'
+                  className='block mb-2 text-sm font-medium'
                 >
                   Notes
                 </label>
@@ -217,17 +217,18 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
                   name='notes'
                   id='notes'
                   rows='4'
-                  className='block w-full p-2.5 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                  className='block w-full p-2.5 text-sm sm:text-base bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500'
                   placeholder='Add Notes'
                   value={formData.notes}
                   onChange={handleInputChange}
                 ></textarea>
               </div>
+
               {/* Resume Section */}
               <div className='col-span-2'>
                 <label
                   htmlFor='resume'
-                  className='block mb-2 text-sm font-medium text-gray-900'
+                  className='block mb-2 text-sm font-medium'
                 >
                   Resume
                 </label>
@@ -256,7 +257,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
               <div className='col-span-2'>
                 <label
                   htmlFor='coverLetter'
-                  className='block mb-2 text-sm font-medium text-gray-900'
+                  className='block mb-2 text-sm font-medium'
                 >
                   Cover Letter
                 </label>
@@ -285,7 +286,7 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
             {/* Submit Button */}
             <button
               type='submit'
-              className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5'
+              className='w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mt-4'
             >
               Update
             </button>
