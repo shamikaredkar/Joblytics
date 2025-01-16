@@ -10,6 +10,7 @@ import {
   faFilter,
   faLink,
   faLinkSlash,
+  faSort,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { InputModal } from "./InputModal";
@@ -38,6 +39,7 @@ export const Applications = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
   const [filteredApplications, setFilteredApplications] = useState([]);
+  const [sortOrder, setSortOrder] = useState("newest");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [applicationToDelete, setApplicationToDelete] = useState(null);
   const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
@@ -50,6 +52,9 @@ export const Applications = () => {
   const handleViewNotes = (notes) => {
     setSelectedNotes(notes);
     toggleNotesModal();
+  };
+  const toggleSortOrder = () => {
+    setSortOrder((prevOrder) => (prevOrder === "newest" ? "oldest" : "newest"));
   };
 
   const toggleDeleteModal = () => {
@@ -117,6 +122,13 @@ export const Applications = () => {
   };
 
   useEffect(() => {
+    let sorted = [...applications];
+
+    if (sortOrder === "newest") {
+      sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
+    } else {
+      sorted.sort((a, b) => new Date(a.date) - new Date(b.date));
+    }
     let filtered = applications;
 
     if (searchTerm) {
@@ -130,7 +142,7 @@ export const Applications = () => {
     }
 
     setFilteredApplications(filtered);
-  }, [applications, searchTerm, filterStatus]);
+  }, [applications, searchTerm, filterStatus, sortOrder]);
 
   const handleRefresh = async () => {
     if (!user || !user.email) return;
@@ -233,6 +245,7 @@ export const Applications = () => {
                 className='hover:text-blue-600'
               />
             </button>
+
             <select
               id='underline_select'
               className='h-10 p-2 text-sm font-semibold text-gray-500 bg-white border rounded-lg'
@@ -274,7 +287,14 @@ export const Applications = () => {
               <thead className='text-xs text-gray-700 uppercase bg-gray-200'>
                 <tr>
                   <th scope='col' className='px-5 py-4'>
-                    Date
+                    <div className='flex items-center gap-2'>
+                      <p> Date</p>
+                      <FontAwesomeIcon
+                        icon={faSort}
+                        onClick={toggleSortOrder}
+                        className='hover:text-blue-600 cursor-pointer'
+                      />
+                    </div>
                   </th>
                   <th scope='col' className='px-5 py-4'>
                     Job Title

@@ -99,18 +99,20 @@ export const InputModal = ({ toggleModal, onSave }) => {
         {/* Modal Content */}
         <div className='bg-white rounded-lg shadow'>
           {/* Modal Header */}
-          <div className='flex items-center justify-between p-4 border-b rounded-t'>
-            <h3 className='text-lg font-semibold text-gray-900'>
-              New Application
-            </h3>
-            <button
-              type='button'
-              className='text-gray-400 hover:text-gray-900 hover:bg-gray-200 rounded-lg text-sm p-2'
-              onClick={toggleModal}
-            >
-              <FontAwesomeIcon icon={faTimes} />
-              <span className='sr-only'>Close modal</span>
-            </button>
+          <div>
+            <div className='flex items-center justify-between p-4 border-b rounded-t'>
+              <h3 className='text-lg font-semibold text-gray-900'>
+                New Application
+              </h3>
+              <button
+                type='button'
+                className='text-gray-400 hover:text-gray-900 hover:bg-gray-200 rounded-lg text-sm p-2'
+                onClick={toggleModal}
+              >
+                <FontAwesomeIcon icon={faTimes} />
+                <span className='sr-only'>Close modal</span>
+              </button>
+            </div>
           </div>
 
           {/* Modal Body */}

@@ -4,11 +4,18 @@ import {
   faTable,
   faHexagonNodes,
   faCalendarCheck,
+  faStarAndCrescent,
+  faStarHalfAlt,
+  faStarOfLife,
+  faStar,
+  faStarHalfStroke,
+  faNoteSticky,
+  faLightbulb,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Features = () => {
   return (
-    <section className='py-24 bg-gray-100'>
+    <section className='p-9 bg-gray-100'>
       {/* bg-gray-100 for light gray background */}
       <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
         {/* Header */}
@@ -44,12 +51,10 @@ const Features = () => {
           {/* Feature 2: AI-Powered Resume Builder */}
           <div className='text-center group mt-16'>
             <FontAwesomeIcon
-              icon={faHexagonNodes}
+              icon={faLightbulb}
               className='text-blue-700 h-10 w-10'
             />
-            <h4 className='text-lg font-medium text-gray-900 mb-3'>
-              AI-Powered Resume Builder
-            </h4>
+            <h4 className='text-lg font-medium text-gray-900 mb-3'>Insights</h4>
             <p className='text-sm font-normal text-gray-500'>
               Optimize your resume with ATS-friendly keywords extracted by AI.
             </p>
@@ -58,15 +63,15 @@ const Features = () => {
           {/* Feature 3: Notifications & Reminders */}
           <div className='text-center group mt-16'>
             <FontAwesomeIcon
-              icon={faCalendarCheck}
+              icon={faHexagonNodes}
               className='text-blue-700 h-10 w-10'
             />
             <h4 className='text-lg font-medium text-gray-900 mb-3'>
-              Notifications & Reminders
+              AI-Powered Resume Enhancer
             </h4>
             <p className='text-sm font-normal text-gray-500'>
-              Never miss deadlines, interviews, or follow-ups with timely
-              reminders.
+              Receive a comprehensive resume score and gain actionable tips for
+              improvement.
             </p>
           </div>
         </div>
