@@ -369,8 +369,7 @@ export const Applications = () => {
                         {app.link && app.link.trim() ? (
                           <a
                             href={
-                              app.link.startsWith("http://") ||
-                              app.link.startsWith("https://")
+                              app.link.startsWith("http")
                                 ? app.link
                                 : `https://${app.link.trim()}`
                             }
