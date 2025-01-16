@@ -18,6 +18,7 @@ import { deleteJobFromUser } from "../../assets/utils/firestoreService";
 import { EditModal } from "./EditModal";
 import { doc, updateDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { DeleteModal } from "./DeleteModal";
 
 export const Applications = () => {
   let today = new Date().toISOString().slice(0, 10);
@@ -35,6 +36,27 @@ export const Applications = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
   const [filteredApplications, setFilteredApplications] = useState([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [applicationToDelete, setApplicationToDelete] = useState(null);
+
+  const toggleDeleteModal = () => {
+    setIsDeleteModalOpen(!isDeleteModalOpen);
+  };
+
+  const confirmDelete = async () => {
+    if (applicationToDelete) {
+      try {
+        // Call the delete function
+        await deleteApplication(applicationToDelete);
+        console.log(`Application ${applicationToDelete} deleted.`);
+      } catch (error) {
+        console.error("Error deleting application:", error);
+      } finally {
+        toggleDeleteModal(); // Close the modal
+        setApplicationToDelete(null); // Reset the state
+      }
+    }
+  };
   const handleNext = () => {
     if (currentPage < totalPages) {
       setCurrentPage((prev) => prev + 1);
@@ -190,7 +212,7 @@ export const Applications = () => {
           <h1 className='text-2xl font-bold'>Job Applications</h1>
           <div className='flex gap-4 items-center'>
             <button
-              className='h-10 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg px-4'
+              className='h-10 flex items-center justify-center bg-gray-50 hover:bg-gray-200 text-gray-700 font-medium rounded-lg px-4'
               onClick={handleRefresh}
             >
               <FontAwesomeIcon
@@ -382,7 +404,10 @@ export const Applications = () => {
 
                         {/* Delete Button */}
                         <button
-                          onClick={() => deleteApplication(app.id)}
+                          onClick={() => {
+                            setApplicationToDelete(app.id); // Set the application ID
+                            toggleDeleteModal(); // Open the modal
+                          }}
                           className='flex items-center justify-center rounded p-2 hover:bg-red-100'
                         >
                           <FontAwesomeIcon
@@ -447,6 +472,12 @@ export const Applications = () => {
           user={user}
         />
       )}
+      {/* Delete Modal */}
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        toggleModal={toggleDeleteModal}
+        onConfirm={confirmDelete}
+      />
     </section>
   );
 };

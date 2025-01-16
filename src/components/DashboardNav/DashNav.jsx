@@ -56,7 +56,7 @@ export const DashNav = () => {
               {/* Dropdown Menu */}
               {dropdownOpen && (
                 <div
-                  className='absolute right-0 mt-2 w-48 z-50 bg-white divide-y border border-1 divide-gray-200 rounded-xl'
+                  className='absolute right-0 mt-2 w-48 z-50 bg-white divide-y border border-1 divide-gray-200 rounded-xl shadow'
                   id='user-dropdown'
                 >
                   <div className='px-4 py-3'>
@@ -71,7 +71,7 @@ export const DashNav = () => {
                     <li>
                       <a
                         href='#'
-                        className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                        className='block px-4 py-2 text-sm text-gray-700 hover:text-red-600'
                         onClick={handleSignOut}
                       >
                         Sign out
