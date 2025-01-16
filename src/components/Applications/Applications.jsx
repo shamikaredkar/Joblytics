@@ -368,6 +368,7 @@ export const Applications = () => {
                       <td className='px-5 py-4 break-all'>
                         <a
                           href={app.link}
+                          target='_blank'
                           className='text-blue-600 hover:underline'
                         >
                           {<FontAwesomeIcon icon={faLink} /> || (

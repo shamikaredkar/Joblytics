@@ -186,22 +186,22 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
                 </select>
               </div>
               {/* Link Input */}
-              <div className='col-span-2 sm:col-span-1'>
+              {/* Link Input */}
+              <div className='col-span-2'>
                 <label
-                  htmlFor='location'
-                  className='block mb-2 text-sm font-medium'
+                  htmlFor='link'
+                  className='block mb-2 text-sm font-medium text-gray-900'
                 >
-                  Link<sup className='text-red-600 font-bold'>*</sup>
+                  Link
                 </label>
                 <input
                   type='text'
-                  name='location'
-                  id='location'
-                  className='bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
-                  placeholder='California, LA'
+                  name='link'
+                  id='link'
+                  className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
+                  placeholder='Paste link to the job'
                   value={formData.link}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
 
