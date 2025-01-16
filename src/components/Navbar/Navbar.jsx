@@ -29,7 +29,7 @@ const Navbar = () => {
             className='flex items-center space-x-3 rtl:space-x-reverse'
           >
             <FontAwesomeIcon
-              icon={faChartLine}
+              icon={faBriefcase}
               className='text-blue-700 h-6 w-6'
             />
             <span className='self-center text-2xl font-semibold whitespace-nowrap text-gray-900'>

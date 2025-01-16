@@ -2,7 +2,12 @@ import React from "react";
 import { UserAuth } from "../../assets/utils/Auth";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChartLine } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBriefcase,
+  faBriefcaseClock,
+  faBullseye,
+  faChartLine,
+} from "@fortawesome/free-solid-svg-icons";
 
 export const DashNav = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -26,7 +31,7 @@ export const DashNav = () => {
             className='flex items-center space-x-3 rtl:space-x-reverse'
           >
             <FontAwesomeIcon
-              icon={faChartLine}
+              icon={faBriefcase}
               className='text-blue-700 h-6 w-6'
             />
             <span className='self-center text-2xl font-semibold whitespace-nowrap text-gray-900'>

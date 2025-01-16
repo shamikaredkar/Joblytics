@@ -8,6 +8,8 @@ import {
   faRefresh,
   faSearch,
   faFilter,
+  faLink,
+  faLinkSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { InputModal } from "./InputModal";
@@ -348,7 +350,9 @@ export const Applications = () => {
                           href={app.link}
                           className='text-blue-600 hover:underline'
                         >
-                          {"Link" || "N/A"}
+                          {<FontAwesomeIcon icon={faLink} /> || (
+                            <FontAwesomeIcon icon={faLinkSlash} />
+                          )}
                         </a>
                       </td>
                       <td className='px-5 py-4 break-words max-w-xs'>
