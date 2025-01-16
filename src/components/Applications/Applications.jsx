@@ -19,10 +19,10 @@ import { EditModal } from "./EditModal";
 import { doc, updateDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { DeleteModal } from "./DeleteModal";
+import { Notes } from "./Notes";
 
 export const Applications = () => {
   let today = new Date().toISOString().slice(0, 10);
-  const [isExpanded, setIsExpanded] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [applications, setApplications] = useState([]);
@@ -38,25 +38,22 @@ export const Applications = () => {
   const [filteredApplications, setFilteredApplications] = useState([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [applicationToDelete, setApplicationToDelete] = useState(null);
+  const [isNotesModalOpen, setIsNotesModalOpen] = useState(false);
+  const [selectedNotes, setSelectedNotes] = useState("");
+
+  const toggleNotesModal = () => {
+    setIsNotesModalOpen(!isNotesModalOpen);
+  };
+
+  const handleViewNotes = (notes) => {
+    setSelectedNotes(notes);
+    toggleNotesModal();
+  };
 
   const toggleDeleteModal = () => {
     setIsDeleteModalOpen(!isDeleteModalOpen);
   };
 
-  const confirmDelete = async () => {
-    if (applicationToDelete) {
-      try {
-        // Call the delete function
-        await deleteApplication(applicationToDelete);
-        console.log(`Application ${applicationToDelete} deleted.`);
-      } catch (error) {
-        console.error("Error deleting application:", error);
-      } finally {
-        toggleDeleteModal(); // Close the modal
-        setApplicationToDelete(null); // Reset the state
-      }
-    }
-  };
   const handleNext = () => {
     if (currentPage < totalPages) {
       setCurrentPage((prev) => prev + 1);
@@ -203,6 +200,20 @@ export const Applications = () => {
       console.error("Error deleting job:", error);
     }
   };
+  const confirmDelete = async () => {
+    if (applicationToDelete) {
+      try {
+        // Call the delete function
+        await deleteApplication(applicationToDelete);
+        console.log(`Application ${applicationToDelete} deleted.`);
+      } catch (error) {
+        console.error("Error deleting application:", error);
+      } finally {
+        toggleDeleteModal(); // Close the modal
+        setApplicationToDelete(null); // Reset the state
+      }
+    }
+  };
 
   return (
     <section className='py-3 sm:py-5'>
@@ -343,18 +354,15 @@ export const Applications = () => {
                       <td className='px-5 py-4 break-words max-w-xs'>
                         {app.notes && app.notes.length > 50 ? (
                           <>
-                            {app.isExpanded
-                              ? app.notes
-                              : `${app.notes.slice(0, 50)}...`}
                             <button
-                              onClick={() => toggleExpand(app.id)}
-                              className='text-blue-600 hover:underline ml-2 text-sm'
+                              onClick={() => handleViewNotes(app.notes)}
+                              className='text-blue-600 hover:underline text-sm'
                             >
-                              {app.isExpanded ? "Less" : "More"}
+                              Open
                             </button>
                           </>
                         ) : (
-                          app.notes || "N/A"
+                          <span>{app.notes || "N/A"}</span>
                         )}
                       </td>
 
@@ -477,6 +485,12 @@ export const Applications = () => {
         isOpen={isDeleteModalOpen}
         toggleModal={toggleDeleteModal}
         onConfirm={confirmDelete}
+      />
+      {/* Notes Modal */}
+      <Notes
+        isModalOpen={isNotesModalOpen}
+        toggleModal={toggleNotesModal}
+        notes={selectedNotes}
       />
     </section>
   );
