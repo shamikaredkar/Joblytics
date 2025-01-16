@@ -366,16 +366,27 @@ export const Applications = () => {
                         </span>
                       </td>
                       <td className='px-5 py-4 break-all'>
-                        <a
-                          href={app.link}
-                          target='_blank'
-                          className='text-blue-600 hover:underline'
-                        >
-                          {<FontAwesomeIcon icon={faLink} /> || (
-                            <FontAwesomeIcon icon={faLinkSlash} />
-                          )}
-                        </a>
+                        {app.link ? (
+                          <a
+                            href={
+                              app.link.startsWith("http")
+                                ? app.link
+                                : `https://${app.link}`
+                            }
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='text-blue-600 hover:underline'
+                          >
+                            <FontAwesomeIcon icon={faLink} />
+                          </a>
+                        ) : (
+                          <FontAwesomeIcon
+                            icon={faLinkSlash}
+                            className='text-gray-500'
+                          />
+                        )}
                       </td>
+
                       <td className='px-5 py-4 break-words max-w-xs'>
                         {app.notes && app.notes.length > 50 ? (
                           <>
