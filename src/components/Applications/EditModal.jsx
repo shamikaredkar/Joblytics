@@ -185,6 +185,25 @@ export const EditModal = ({ toggleEditModal, application, onSave, user }) => {
                   <option value='Rejected'>Rejected</option>
                 </select>
               </div>
+              {/* Link Input */}
+              <div className='col-span-2 sm:col-span-1'>
+                <label
+                  htmlFor='location'
+                  className='block mb-2 text-sm font-medium'
+                >
+                  Link<sup className='text-red-600 font-bold'>*</sup>
+                </label>
+                <input
+                  type='text'
+                  name='location'
+                  id='location'
+                  className='bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'
+                  placeholder='California, LA'
+                  value={formData.link}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
 
               {/* Notes Input */}
               <div className='col-span-2'>
