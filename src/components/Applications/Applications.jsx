@@ -382,7 +382,7 @@ export const Applications = () => {
                         ) : (
                           <FontAwesomeIcon
                             icon={faLinkSlash}
-                            className='text-gray-500'
+                            className='text-gray-600'
                           />
                         )}
                       </td>
