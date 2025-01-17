@@ -1,5 +1,8 @@
 <div align="center"><h2>Joblytics - <a href="https://joblytics-374b5.web.app/">Demo</a></h2></div>
 
+[![Video Title](https://img.youtube.com/vi/VIDEO_ID/0.jpg)]()
+[![Video](https://img.youtube.com/vi/jXnoFqcAkQA/maxresdefault.jpg)](https://youtu.be/6JCgLXkvuNU)
+
 ## Overview
 
 Joblytic is a SaaS platform that transforms the way you manage your job applications. Designed for efficiency, Joblytic helps users track applications, optimize resumes, and stay organized throughout the job search journey. With AI-powered tools and a seamless user experience, Joblytic ensures you never miss an opportunity to land your dream job.
