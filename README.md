@@ -1,7 +1,7 @@
 <div align="center"><h2>Joblytics - <a href="https://joblytics-374b5.web.app/">Demo</a></h2></div>
 
-[![Video Title](https://img.youtube.com/vi/VIDEO_ID/0.jpg)]()
-[![Video](https://img.youtube.com/vi/jXnoFqcAkQA/maxresdefault.jpg)](https://youtu.be/6JCgLXkvuNU)
+## Click the image to play the video demo 
+[![Video](https://github.com/shamikaredkar/Joblytics/blob/main/Joblytics%20Preview.png)](https://youtu.be/6JCgLXkvuNU)
 
 ## Overview
 
