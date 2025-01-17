@@ -1,4 +1,4 @@
-<div align="center"><h2>Joblytic - <a href="https://joblytics-374b5.web.app/">Demo</a></h2></div>
+<div align="center"><h2>Joblytics - <a href="https://joblytics-374b5.web.app/">Demo</a></h2></div>
 
 ## Overview
 
